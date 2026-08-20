@@ -1,0 +1,140 @@
+{
+  "full_name": "Derrick Adjei",
+  "headline": "Data Engineer / Software Engineer",
+  "email": "derrick.adjei.eng@gmail.com",
+  "phone": "+46-76-251-7998",
+  "location": "Stockholm, Sweden",
+  "github": "https://github.com/Dna072",
+  "github_username": "Dna072",
+  "linkedin": "https://www.linkedin.com/in/derrick-adjei-5421289a/",
+  "portfolio": "https://dna072.github.io",
+  "work_authorization_notes": "Resident in Sweden. Do not invent visa status beyond this.",
+  "languages": ["English"],
+  "education": [
+    {
+      "degree": "MSc Data Science",
+      "institution": "Uppsala University",
+      "location": "Uppsala, Sweden",
+      "start": "2022",
+      "end": "2024",
+      "highlights": [
+        "Thesis: Deep Reinforcement Learning for Job Shop Scheduling (github.com/Dna072/drl-jss)"
+      ],
+      "source": "resume_pdf,portfolio"
+    },
+    {
+      "degree": "BSc Computer Engineering",
+      "institution": "University of Ghana",
+      "location": "Accra, Ghana",
+      "start": "2013",
+      "end": "2017",
+      "source": "resume_pdf,portfolio"
+    }
+  ],
+  "experience": [
+    {
+      "id": "kpmg",
+      "employer": "KPMG Sweden",
+      "title": "System Specialist – Data & Process Automation",
+      "location": "Stockholm, Sweden",
+      "start": "2023",
+      "end": "Present",
+      "kind": "professional",
+      "source": "resume_pdf,portfolio",
+      "bullets": [
+        "Develop enterprise solutions using Microsoft Power Platform (Power Apps, Power Automate, and Power BI).",
+        "Built business dashboards and reports supporting operational and risk management decisions.",
+        "Automated business processes using Power Automate, reducing manual effort and improving operational efficiency.",
+        "Collaborated with business stakeholders to digitize workflows and improve reporting."
+      ],
+      "skills": ["Power Platform", "Power Apps", "Power Automate", "Power BI", "Dashboards"]
+    },
+    {
+      "id": "ntc-data",
+      "employer": "National Teaching Council",
+      "title": "Data Engineer (Contract)",
+      "location": "Greater Accra, Ghana",
+      "start": "2022",
+      "end": "2025",
+      "kind": "professional",
+      "source": "resume_pdf,portfolio",
+      "bullets": [
+        "Designed and deployed a production ETL pipeline using AWS Glue to extract data from PostgreSQL and load into Amazon Redshift for nationwide analytics.",
+        "Built scalable staging and transformation layers, converting transactional data into a star schema warehouse model optimized for analytical workloads.",
+        "Optimized Redshift performance using distribution styles and sort keys, reducing data movement and improving query performance up to 50%.",
+        "Developed batch processing pipelines to handle large scale datasets supporting analytics across 500,000+ users.",
+        "Implemented data quality checks, validation pipelines and monitoring, ensuring reliability of downstream analytics and reporting systems.",
+        "Enabled analytics-ready datasets and feature inputs for reporting and data-driven decision-making.",
+        "Contributed to production web platforms including TPG (tpg.ntc.gov.gh)."
+      ],
+      "skills": [
+        "Python", "SQL", "PostgreSQL", "AWS Glue", "Amazon Redshift", "Amazon S3",
+        "ETL", "ELT", "Data Warehousing", "Data Modelling", "Data Quality"
+      ]
+    },
+    {
+      "id": "ntc-swe",
+      "employer": "National Teaching Council",
+      "title": "Software Engineer / Lead IT Officer",
+      "location": "Greater Accra, Ghana",
+      "start": "2018-09",
+      "end": "2023-02",
+      "kind": "professional",
+      "source": "candidate_brief,linkedin_public_snippet",
+      "bullets": [
+        "Software engineering and IT leadership for nationwide teacher-regulation systems at the National Teaching Council of Ghana.",
+        "Production web platform work including Teacher Portal Ghana (tpg.ntc.gov.gh).",
+        "Teacher licensing and digital certificate workflows (related public artifact: Dna072/cert_generator).",
+        "APIs, authentication/IAM, PostgreSQL, dashboards, CI/CD, Docker, and high-availability operational systems as stated in the candidate brief."
+      ],
+      "skills": [
+        "JavaScript", "Node.js", "Python", "PostgreSQL", "APIs", "IAM",
+        "Docker", "Kubernetes", "CI/CD", "Dashboards"
+      ],
+      "notes": "Title/dates from candidate brief and LinkedIn; not the title used on the existing data-engineer PDF. Do not invent metrics."
+    }
+  ],
+  "affiliations": [
+    {
+      "organization": "NexDev Technologies",
+      "relationship": "product_engineering",
+      "title": null,
+      "source": "candidate_brief,live_products",
+      "products": ["SIMSGH", "MedLink", "Arctiq"],
+      "notes": "No employer title or dates on the PDF resume. List as product work, not a fabricated job."
+    }
+  ],
+  "skills": {
+    "programming": ["Python", "SQL", "JavaScript", "TypeScript", "Java", "React", "Next.js", "Node.js", "Express"],
+    "data": [
+      "PostgreSQL", "MongoDB", "Redis", "Elasticsearch", "Apache Spark", "PySpark",
+      "Apache Airflow", "AWS Redshift", "AWS Glue", "ETL", "ELT", "Data Warehousing",
+      "Data Lakes", "Data Pipelines", "Data Modelling"
+    ],
+    "cloud": ["AWS S3", "AWS Glue", "AWS Redshift", "AWS Athena"],
+    "infrastructure": ["Docker", "Docker Compose", "Kubernetes", "CI/CD", "GitHub"],
+    "ml": ["PyTorch", "Scikit-learn", "Reinforcement Learning", "Gymnasium", "DQN", "PPO"],
+    "frontend": ["React", "Next.js", "TypeScript", "JavaScript", "Tailwind", "Vite", "REST"],
+    "brief_only_do_not_claim_as_employment": [
+      "C++", "C#", "MySQL", "Kafka", "OpenSearch", "AWS EC2", "AWS RDS", "AWS Aurora",
+      "AWS VPC", "AWS Route53", "AWS ELB", "Jenkins"
+    ],
+    "explicit_gaps": ["Kafka", "dbt", "Snowflake", "Databricks", "Iceberg"]
+  },
+  "resume_skill_sets": {
+    "DATA_ENGINEER": [
+      "Python", "SQL", "Spark", "PySpark", "Airflow", "AWS", "Redshift", "Glue",
+      "PostgreSQL", "ETL", "ELT", "data pipelines", "data modelling", "data lakes",
+      "warehouses", "Kafka", "Athena"
+    ],
+    "BACKEND_ENGINEER": [
+      "Python", "Java", "Node.js", "TypeScript", "APIs", "REST", "PostgreSQL",
+      "MongoDB", "Redis", "Kafka", "AWS", "Docker", "Kubernetes", "CI/CD",
+      "microservices", "IAM", "FastAPI"
+    ],
+    "FRONTEND_ENGINEER": [
+      "React", "Next.js", "TypeScript", "JavaScript", "Tailwind", "Vite",
+      "frontend architecture", "REST", "accessibility", "performance"
+    ]
+  }
+}

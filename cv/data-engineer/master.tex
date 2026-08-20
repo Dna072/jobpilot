@@ -1,0 +1,66 @@
+% Data Engineer master resume — Derrick Adjei
+% Do not overwrite this file during tailoring. Copy into cv/generated/.
+\documentclass[10pt,a4paper]{article}
+\usepackage[margin=1.4cm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[hidelinks]{hyperref}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{xcolor}
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+\setlist[itemize]{leftmargin=1.1em,itemsep=2pt,topsep=2pt,parsep=0pt}
+\titleformat{\section}{\large\bfseries\uppercase}{}{0pt}{}[\titlerule]
+\titlespacing*{\section}{0pt}{8pt}{4pt}
+\hypersetup{urlcolor=black}
+
+\begin{document}
+\begin{center}
+{\LARGE\bfseries Derrick Adjei}\\[2pt]
+{\large Data Engineer}\\[4pt]
+Stockholm, Sweden \textbullet{} +46-76-251-7998 \textbullet{}
+\href{mailto:derrick.adjei.eng@gmail.com}{derrick.adjei.eng@gmail.com}\\
+\href{https://github.com/Dna072}{github.com/Dna072} \textbullet{}
+\href{https://dna072.github.io}{dna072.github.io} \textbullet{}
+\href{https://www.linkedin.com/in/derrick-adjei-5421289a/}{LinkedIn}
+\end{center}
+
+\section{Experience}
+\textbf{KPMG Sweden} \hfill 2023 -- Present\\
+\textit{System Specialist -- Data \& Process Automation} \hfill Stockholm, Sweden
+\begin{itemize}
+  \item Develop enterprise solutions using Microsoft Power Platform (Power Apps, Power Automate, Power BI).
+  \item Built business dashboards and reports supporting operational and risk-management decisions.
+  \item Automated recurring business processes with Power Automate, reducing manual effort.
+  \item Collaborated with stakeholders to digitize workflows and improve reporting.
+\end{itemize}
+
+\textbf{National Teaching Council} \hfill 2022 -- 2025\\
+\textit{Data Engineer (Contract)} \hfill Greater Accra, Ghana
+\begin{itemize}
+  \item Designed and deployed a production ETL pipeline using AWS Glue from PostgreSQL into Amazon Redshift for nationwide analytics.
+  \item Built staging and transformation layers into a star-schema warehouse optimized for analytical workloads.
+  \item Tuned Redshift distribution and sort keys, reducing data movement and improving query performance by up to 50\%.
+  \item Developed batch pipelines supporting analytics across 500{,}000+ users, with data quality checks and monitoring.
+  \item Enabled analytics-ready datasets for reporting and data-driven decision-making.
+\end{itemize}
+
+\section{Selected projects}
+\textit{Portfolio and thesis work --- not employment.}
+\begin{itemize}
+  \item \textbf{STEDI lakehouse} --- AWS S3 / Glue / Athena / Spark medallion pipeline with consent-aware trusted zones. \href{https://github.com/Dna072/stedi-human-balance-analytics}{github.com/Dna072/stedi-human-balance-analytics}
+  \item \textbf{Airflow pipelines} --- Orchestrated ETL with retries and data-quality gates. \href{https://github.com/Dna072/airflow-pipelines}{github.com/Dna072/airflow-pipelines}
+  \item \textbf{Sparkify Redshift warehouse} --- S3\,$\rightarrow$\,Redshift star schema for streaming analytics. \href{https://github.com/Dna072/sparkify\_dwh\_aws\_redshift}{github.com/Dna072/sparkify\_dwh\_aws\_redshift}
+\end{itemize}
+
+\section{Skills}
+\textbf{Languages:} Python, SQL, JavaScript, TypeScript\\
+\textbf{Data:} PostgreSQL, Apache Airflow, Apache Spark / PySpark, AWS Glue, Amazon Redshift, Amazon S3, Amazon Athena, ETL/ELT, dimensional modelling, data quality\\
+\textbf{Also used:} MongoDB, Redis, Elasticsearch, Docker, CI/CD, REST
+
+\section{Education}
+\textbf{MSc Data Science}, Uppsala University, Sweden \hfill 2022 -- 2024\\
+Thesis: Deep Reinforcement Learning for Job Shop Scheduling (\href{https://github.com/Dna072/drl-jss}{drl-jss})\\[3pt]
+\textbf{BSc Computer Engineering}, University of Ghana \hfill 2013 -- 2017
+\end{document}

@@ -1,0 +1,144 @@
+candidate:
+  name: Derrick Adjei
+  email: derrick.adjei.eng@gmail.com
+  phone: "+46-76-251-7998"
+  location: Stockholm, Sweden
+  github_username: Dna072
+  linkedin: https://www.linkedin.com/in/derrick-adjei-5421289a/
+  portfolio: https://dna072.github.io
+  profile_path: data/candidate_profile.json
+  inventory_path: data/portfolio_inventory.json
+
+target_roles:
+  tier_1:
+    - Data Engineer
+    - Senior Data Engineer
+    - Analytics Engineer
+    - Data Platform Engineer
+    - Data Infrastructure Engineer
+    - Data Warehouse Engineer
+    - ETL Engineer
+    - Big Data Engineer
+  tier_2:
+    - Backend Engineer
+    - Software Engineer Backend
+    - ML Engineer
+    - MLOps Engineer
+    - Platform Engineer
+    - API Engineer
+    - Python Backend Engineer
+    - Node.js Engineer
+  tier_3:
+    - Frontend Engineer
+    - Frontend Developer
+    - React Engineer
+    - Full Stack Engineer
+    - Software Engineer
+
+target_countries:
+  - Sweden
+  - Denmark
+  - Norway
+  - Finland
+  - Germany
+  - Netherlands
+  - Switzerland
+  - Ireland
+  - Belgium
+
+priority_countries:
+  Sweden: 1.0
+  Denmark: 0.9
+  Norway: 0.9
+  Finland: 0.85
+  Germany: 0.8
+  Netherlands: 0.8
+  Switzerland: 0.75
+  Ireland: 0.75
+  Belgium: 0.7
+
+priority_cities:
+  Stockholm: 1.0
+  Gothenburg: 0.95
+  Malmö: 0.95
+  Uppsala: 0.9
+  Copenhagen: 0.9
+  Oslo: 0.9
+  Helsinki: 0.85
+  Berlin: 0.8
+  Amsterdam: 0.8
+  Zurich: 0.75
+  Dublin: 0.75
+
+remote_europe: true
+hybrid_europe: true
+relocation: true
+
+match:
+  weights:
+    technical_skills: 0.30
+    relevant_experience: 0.25
+    portfolio_evidence: 0.15
+    seniority: 0.10
+    education: 0.05
+    location: 0.05
+    industry: 0.05
+    other: 0.05
+  minimum_match_score: 75
+  ideal_match_score: 85
+
+applications:
+  maximum_daily_applications: 8
+  dry_run: true
+  allow_browser_automation: false
+  allow_greenhouse_http: false
+  allow_lever_http: false
+  linkedin_automation: false
+
+project_strategy:
+  min_jobs_for_new_project: 3
+  prefer_upgrade: true
+  project_roots:
+    - /workspace
+    - /repos
+  rejected_ideas:
+    - Kafka Tutorial
+    - Hello Spark
+    - Another Redshift Star Schema
+
+scout:
+  max_jobs_per_source: 80
+  sources:
+    arbeitnow:
+      enabled: true
+    greenhouse:
+      enabled: true
+      boards:
+        - spotify
+        - klarna
+        - king
+        - mojang
+        - volvo
+        - polestar
+        - iizuke
+    lever:
+      enabled: true
+      companies:
+        - tretton37
+    adzuna:
+      enabled: false
+      countries: [se, de, nl, gb, at, be, ch]
+  polite_delay_seconds: 1.0
+
+resume:
+  masters:
+    DATA_ENGINEER: cv/data-engineer/master.tex
+    BACKEND_ENGINEER: cv/backend-engineer/master.tex
+    FRONTEND_ENGINEER: cv/frontend-engineer/master.tex
+  generated_dir: cv/generated
+  max_pages: 2
+
+scheduler:
+  scout_cron: "0 */6 * * *"
+  repo_watch_cron: "*/15 * * * *"
+  weekly_report_cron: "0 7 * * mon"
