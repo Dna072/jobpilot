@@ -1,0 +1,25 @@
+steps:
+  - name: gcr.io/cloud-builders/docker
+    args: ["build", "-t", "${_REGION}-docker.pkg.dev/$PROJECT_ID/jobpilot/api:${_TAG}", "."]
+  - name: gcr.io/cloud-builders/docker
+    args:
+      [
+        "build",
+        "-f",
+        "Dockerfile.web",
+        "-t",
+        "${_REGION}-docker.pkg.dev/$PROJECT_ID/jobpilot/web:${_TAG}",
+        ".",
+      ]
+  - name: gcr.io/cloud-builders/docker
+    args: ["push", "${_REGION}-docker.pkg.dev/$PROJECT_ID/jobpilot/api:${_TAG}"]
+  - name: gcr.io/cloud-builders/docker
+    args: ["push", "${_REGION}-docker.pkg.dev/$PROJECT_ID/jobpilot/web:${_TAG}"]
+substitutions:
+  _REGION: europe-north1
+  _TAG: latest
+images:
+  - ${_REGION}-docker.pkg.dev/$PROJECT_ID/jobpilot/api:${_TAG}
+  - ${_REGION}-docker.pkg.dev/$PROJECT_ID/jobpilot/web:${_TAG}
+options:
+  logging: CLOUD_LOGGING_ONLY

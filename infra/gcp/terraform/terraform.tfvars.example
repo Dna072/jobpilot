@@ -1,0 +1,6 @@
+project_id = "YOUR_GCP_PROJECT_ID"
+region     = "europe-north1"
+# Filled by scripts/gcp-deploy.sh after the first image build:
+api_image  = "europe-north1-docker.pkg.dev/YOUR_GCP_PROJECT_ID/jobpilot/api:latest"
+web_image  = "europe-north1-docker.pkg.dev/YOUR_GCP_PROJECT_ID/jobpilot/web:latest"
+db_tier    = "db-f1-micro"
