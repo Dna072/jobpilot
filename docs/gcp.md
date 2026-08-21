@@ -47,6 +47,20 @@ chmod +x scripts/gcp-deploy.sh scripts/gcp-secrets.sh
 
 The script builds images with Cloud Build, applies Terraform, and uploads SMTP/GitHub secrets from `.env`.
 
+### Cloud Build `PERMISSION_DENIED`
+
+`gcloud builds submit` needs **Cloud Build Editor** (or Owner) on the project. Creating an Artifact Registry repo is a different permission, so that step can succeed while the build still fails.
+
+```bash
+ACCOUNT="$(gcloud config get-value account)"
+gcloud services enable cloudbuild.googleapis.com --project="$GCP_PROJECT"
+gcloud projects add-iam-policy-binding "$GCP_PROJECT" \
+  --member="user:${ACCOUNT}" \
+  --role="roles/cloudbuild.builds.editor"
+```
+
+If that binding itself is denied, the project Owner must grant you `roles/cloudbuild.builds.editor` or `roles/editor`. Wait 1–2 minutes, then re-run `./scripts/gcp-deploy.sh`.
+
 ## After deploy
 
 ```bash

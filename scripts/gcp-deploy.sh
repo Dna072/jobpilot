@@ -31,6 +31,17 @@ gcloud services enable \
   iam.googleapis.com \
   cloudresourcemanager.googleapis.com
 
+ACCOUNT="$(gcloud config get-value account)"
+PROJECT_NUMBER="$(gcloud projects describe "$PROJECT" --format='value(projectNumber)')"
+CLOUDBUILD_SA="${PROJECT_NUMBER}@cloudbuild.gserviceaccount.com"
+
+# Cloud Build's service account must be able to push images (this runs before Terraform).
+gcloud artifacts repositories add-iam-policy-binding jobpilot \
+  --location="$REGION" \
+  --member="serviceAccount:${CLOUDBUILD_SA}" \
+  --role="roles/artifactregistry.writer" \
+  --quiet >/dev/null || true
+
 if ! gcloud artifacts repositories describe jobpilot --location="$REGION" >/dev/null 2>&1; then
   gcloud artifacts repositories create jobpilot \
     --repository-format=docker \
@@ -38,9 +49,23 @@ if ! gcloud artifacts repositories describe jobpilot --location="$REGION" >/dev/
     --description="JobPilot images"
 fi
 
-gcloud builds submit "$ROOT" \
+if ! gcloud builds submit "$ROOT" \
   --config "$ROOT/infra/gcp/cloudbuild.yaml" \
-  --substitutions="_REGION=${REGION},_TAG=${TAG}"
+  --substitutions="_REGION=${REGION},_TAG=${TAG}"; then
+  cat >&2 <<EOF
+
+Cloud Build failed. The logged-in account (${ACCOUNT}) needs permission to create builds
+in project ${PROJECT}. If you are Owner/Editor of the project, run:
+
+  gcloud services enable cloudbuild.googleapis.com --project=${PROJECT}
+  gcloud projects add-iam-policy-binding ${PROJECT} \\
+    --member="user:${ACCOUNT}" \\
+    --role="roles/cloudbuild.builds.editor"
+
+Also confirm billing is enabled for ${PROJECT}. Then re-run ./scripts/gcp-deploy.sh
+EOF
+  exit 1
+fi
 
 cat > "$TF_DIR/terraform.tfvars" <<EOF
 project_id = "${PROJECT}"
