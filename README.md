@@ -93,6 +93,19 @@ ACTION REQUIRED — Create Repository: [PROJECT]
 
 and sets `PROJECT_STATUS = WAITING_FOR_REPOSITORY` until the repo appears.
 
+## GCP (always-on)
+
+A laptop is enough for `jobpilot cycle`. Continuous scout / repo-watch / weekly email needs a host.
+
+GCP config lives in [`infra/gcp`](infra/gcp) and is documented in [`docs/gcp.md`](docs/gcp.md):
+
+```bash
+export GCP_PROJECT=your-project-id
+./scripts/gcp-deploy.sh
+```
+
+That provisions Cloud Run (API + dashboard), Cloud SQL, Cloud Scheduler jobs, Secret Manager, and a GCS bucket for generated CVs. Redis/Celery are not used in GCP — Scheduler runs `jobpilot cycle` every six hours.
+
 ## Configuration
 
 All targeting, weights, and caps live in [`config/jobpilot.yaml`](config/jobpilot.yaml). Do not hard-code them.

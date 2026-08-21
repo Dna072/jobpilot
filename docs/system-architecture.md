@@ -81,7 +81,17 @@ Structured outputs are validated with Pydantic. If the LLM fails validation, the
 - `GET /api/v1/status` and CLI `jobpilot status`
 - `agent_runs` table for audit
 
-## What we will not build
+## GCP production
+
+Local Docker Compose uses Celery + Redis. GCP replaces the always-on worker with Cloud Scheduler and Cloud Run Jobs so the control plane can scale to zero between ticks.
+
+See [`docs/gcp.md`](gcp.md).
+
+```text
+Cloud Scheduler → Cloud Run Job (cycle / watch / report)
+Browser → Cloud Run web → Cloud Run api → Cloud SQL + GCS + Secret Manager
+```
+
 
 - LinkedIn Easy Apply bots
 - Residential proxy pools / captcha farms

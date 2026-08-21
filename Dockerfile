@@ -13,8 +13,10 @@ COPY data /app/data
 COPY cv /app/cv
 COPY alembic.ini /app/alembic.ini
 COPY alembic /app/alembic
+COPY entrypoint.sh /app/entrypoint.sh
 
-RUN pip install --no-cache-dir -e .
+RUN pip install --no-cache-dir -e ".[gcp]" && chmod +x /app/entrypoint.sh
 
-EXPOSE 8000
-CMD ["uvicorn", "jobpilot.api.main:app", "--host", "0.0.0.0", "--port", "8000"]
+EXPOSE 8080
+ENTRYPOINT ["/app/entrypoint.sh"]
+CMD ["uvicorn", "jobpilot.api.main:app", "--host", "0.0.0.0", "--port", "8080"]

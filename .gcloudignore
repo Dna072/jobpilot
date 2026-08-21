@@ -1,0 +1,14 @@
+.gcloudignore
+.git
+.github
+.venv
+frontend/node_modules
+frontend/.next
+**/__pycache__
+*.pyc
+*.tfstate
+.terraform
+cv/generated
+*.db
+.env
+infra/gcp/terraform/.terraform

@@ -40,6 +40,11 @@ class Settings(BaseSettings):
     github_username: str = "Dna072"
     http_user_agent: str = "JobPilot/0.1 (+https://github.com/Dna072/jobpilot)"
 
+    port: int = 8080
+    jobpilot_ops_token: str = ""
+    gcs_bucket: str = ""
+    gcs_prefix: str = "jobpilot"
+
 
 @lru_cache
 def get_settings() -> Settings:

@@ -13,3 +13,5 @@ cycle:
 	jobpilot cycle --no-scout
 compose:
 	docker compose up --build
+gcp-deploy:
+	./scripts/gcp-deploy.sh

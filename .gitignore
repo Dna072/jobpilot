@@ -51,3 +51,13 @@ cv/**/*.synctex.gz
 # Local DB
 *.sqlite
 *.db
+
+# Terraform
+infra/gcp/terraform/.terraform/
+infra/gcp/terraform/.terraform.lock.hcl
+infra/gcp/terraform/*.tfstate
+infra/gcp/terraform/*.tfstate.*
+infra/gcp/terraform/tfplan
+infra/gcp/terraform/terraform.tfvars
+*.tfvars
+!*.tfvars.example

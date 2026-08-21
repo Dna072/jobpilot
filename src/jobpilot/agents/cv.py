@@ -61,6 +61,9 @@ def generate_package(analysis: JobAnalysis, match: MatchReport) -> ApplicationPa
                 github.append(project.repository)
 
     answers = [ScreeningAnswer(**row) for row in screening_answers(analysis)]
+    from jobpilot.storage import persist_directory
+
+    persist_directory(dest, f"generated/{dest.name}")
     return ApplicationPackage(
         company=analysis.company,
         role=analysis.title,
