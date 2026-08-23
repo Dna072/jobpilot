@@ -1,39 +1,18 @@
 from __future__ import annotations
 
 from jobpilot.config import load_app_config
+from jobpilot.geo import location_match_score
 from jobpilot.knowledge import load_candidate_profile, load_inventory
 from jobpilot.schemas.common import (
     GapVerdict,
     MatchRecommendation,
     RequirementLevel,
     ResumeType,
-    WorkMode,
 )
 from jobpilot.schemas.job import ExtractedRequirement, JobAnalysis
 from jobpilot.schemas.match import GapItem, GapReport, MatchBreakdown, MatchReport
 from jobpilot.schemas.portfolio import PortfolioInventory
 from jobpilot.skills import candidate_skill_set, canonical_skill, expand_aliases
-
-NORDIC = {"sweden", "denmark", "norway", "finland"}
-EUROPE = NORDIC | {
-    "germany",
-    "netherlands",
-    "switzerland",
-    "ireland",
-    "belgium",
-    "austria",
-    "france",
-    "spain",
-    "italy",
-    "portugal",
-    "poland",
-    "estonia",
-    "latvia",
-    "lithuania",
-    "czech republic",
-    "czechia",
-}
-
 
 def _has_skill(owned: set[str], skill: str) -> bool:
     skill = canonical_skill(skill)
@@ -145,28 +124,13 @@ def score_education(analysis: JobAnalysis) -> float:
 
 def score_location(analysis: JobAnalysis, config: dict | None = None) -> float:
     config = config or load_app_config()
-    loc = f"{analysis.location} {analysis.country or ''} {analysis.work_mode.value}".lower()
-    cities: dict = config.get("priority_cities", {})
-    countries: dict = config.get("priority_countries", {})
-    for city, weight in cities.items():
-        if city.lower() in loc:
-            return float(weight)
-    for country, weight in countries.items():
-        if country.lower() in loc:
-            if analysis.work_mode == WorkMode.REMOTE:
-                return min(1.0, float(weight) + 0.05)
-            return float(weight)
-    if analysis.work_mode == WorkMode.REMOTE and any(c in loc for c in ("europe", "eu", "emea")):
-        return 0.85 if config.get("remote_europe", True) else 0.4
-    if analysis.work_mode == WorkMode.REMOTE and not any(c in loc for c in EUROPE):
-        if "sweden" in loc or "nordic" in loc or "europe" in loc:
-            return 0.85
-        if any(x in loc for x in ("united states", "usa", "us-only", "canada", "india")):
-            return 0.15
-        return 0.45
-    if any(c in loc for c in EUROPE):
-        return 0.55
-    return 0.2
+    return location_match_score(
+        analysis.location,
+        analysis.country,
+        analysis.city,
+        analysis.work_mode,
+        config,
+    )
 
 
 def score_industry(analysis: JobAnalysis) -> float:

@@ -26,7 +26,7 @@
 
 **Tier 3:** Frontend Engineer, Full Stack Engineer, Software Engineer.
 
-Geographic priority: Sweden first, then Denmark, Norway, Finland, Germany, Netherlands, Switzerland, Ireland, Belgium, then other Europe. Remote/hybrid Europe and relocation are in scope.
+Geographic priority: Sweden first, with Uppsala, Stockholm, Gothenburg, and Malmö at the top. Then other Sweden, then Denmark, Norway, Finland, Germany, Netherlands, Switzerland, Ireland, Belgium, then other Europe. Remote/hybrid Europe and relocation are in scope. US-only roles are out of scope.
 
 ## Professional experience (do not convert portfolio into employment)
 

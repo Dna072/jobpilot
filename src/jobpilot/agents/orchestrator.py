@@ -41,6 +41,7 @@ from jobpilot.schemas.common import (
     require_submission_evidence,
 )
 from jobpilot.schemas.job import JobPosting
+from jobpilot.geo import in_geographic_scope, location_rank
 from jobpilot.sources.jobs import discover_jobs
 
 
@@ -106,7 +107,7 @@ def seed_knowledge() -> None:
                     skills=project.skills_demonstrated,
                 )
             )
-        for name in ("arbeitnow", "greenhouse", "lever", "manual"):
+        for name in ("arbeitnow", "greenhouse", "lever", "jobtech", "remotive", "adzuna", "manual"):
             if not session.query(JobSource).filter_by(name=name).first():
                 session.add(JobSource(name=name, kind="api"))
         session.commit()
@@ -176,6 +177,8 @@ def upsert_job(posting: JobPosting) -> tuple[Job, bool]:
 def ingest_postings(postings: list[JobPosting]) -> int:
     created = 0
     for posting in postings:
+        if not in_geographic_scope(posting.location, posting.country, posting.city, posting.work_mode):
+            continue
         _, is_new = upsert_job(posting)
         created += int(is_new)
     return created
@@ -361,13 +364,17 @@ def run_cycle(limit: int = 25, scout: bool = True) -> dict:
     session = get_session()
     processed = []
     try:
-        pending = (
-            session.query(Application)
+        rows = (
+            session.query(Application, Job)
+            .join(Job, Application.job_id == Job.id)
             .filter(Application.status.in_([ApplicationStatus.DISCOVERED.value, ApplicationStatus.ANALYZED.value]))
-            .limit(limit)
             .all()
         )
-        ids = [a.job_id for a in pending]
+        rows.sort(
+            key=lambda pair: location_rank(pair[1].location, pair[1].country, pair[1].city, pair[1].work_mode),
+            reverse=True,
+        )
+        ids = [app.job_id for app, _job in rows[:limit]]
     finally:
         session.close()
     for job_id in ids:

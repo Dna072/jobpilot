@@ -41,7 +41,7 @@ export default async function JobsPage() {
           ))}
         </tbody>
       </table>
-      {jobs.length === 0 ? <p className="lede">No jobs ingested yet. Run `jobpilot cycle`.</p> : null}
+      {jobs.length === 0 ? <p className="lede">No jobs ingested yet. A cycle runs every 15 minutes (Sweden first: Uppsala, Stockholm, Gothenburg, Malmö).</p> : null}
     </div>
   );
 }

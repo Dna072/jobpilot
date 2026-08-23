@@ -54,7 +54,7 @@ Structured outputs are validated with Pydantic. If the LLM fails validation, the
 
 ## Data flow (happy path)
 
-1. **Scout** pulls *permitted* feeds (Arbeitnow, Greenhouse boards, Lever postings, optional Adzuna). Respects rate limits. No aggressive scraping, no LinkedIn automation.
+1. **Scout** pulls permitted feeds every 15 minutes: Arbetsförmedlingen JobTech (Sweden, priority Uppsala / Stockholm / Gothenburg / Malmö), Greenhouse and Lever career boards, Arbeitnow, Remotive (EU remote), optional Adzuna. Respects rate limits. No Indeed/LinkedIn scraping and no LinkedIn automation.
 2. **Dedup** on job key: source+id, URL, and `(company, normalized title, location)`.
 3. **Analyst** extracts required / preferred / nice-to-have skills and constraints.
 4. **Match** scores against the candidate profile + portfolio inventory (transparent weights).

@@ -10,7 +10,7 @@ Redis/Celery are for local Docker Compose. On GCP they are replaced by **Cloud S
 
 ```text
 Cloud Scheduler (Europe/Stockholm)
-  0 */6 * * *     → Cloud Run Job jobpilot-cycle
+  */15 * * * *    → Cloud Run Job jobpilot-cycle
   */15 * * * *    → Cloud Run Job jobpilot-watch
   0 7 * * 1       → Cloud Run Job jobpilot-report
 

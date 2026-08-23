@@ -50,7 +50,7 @@ Or: `docker compose up --build` (Postgres, Redis, API, worker, beat, web).
 
 ```bash
 jobpilot status          # pipeline counters
-jobpilot scout           # permitted job feeds only
+jobpilot scout           # JobTech + ATS boards + EU remote (not LinkedIn/Indeed scrape)
 jobpilot cycle           # scout + process
 jobpilot cycle --no-scout
 jobpilot watch-repos     # detect human-created GitHub repos

@@ -1,7 +1,7 @@
 resource "google_cloud_scheduler_job" "cycle" {
   name        = "jobpilot-cycle"
-  description = "Scout and process jobs every 6 hours"
-  schedule    = "0 */6 * * *"
+  description = "Scout Sweden-first roles every 15 minutes"
+  schedule    = "*/15 * * * *"
   time_zone   = "Europe/Stockholm"
   region      = var.scheduler_region
   depends_on  = [google_project_service.services, google_cloud_run_v2_job.cycle]

@@ -86,7 +86,10 @@ def infer_city(location: str) -> str | None:
     cities = [
         "Stockholm",
         "Gothenburg",
+        "Göteborg",
+        "Goteborg",
         "Malmö",
+        "Malmo",
         "Uppsala",
         "Copenhagen",
         "Oslo",
