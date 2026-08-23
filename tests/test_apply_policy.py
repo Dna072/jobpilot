@@ -15,7 +15,7 @@ def test_linkedin_is_manual():
     assert ApplyPolicy().detect(posting) == ApplyMechanism.MANUAL
     permitted, reason = ApplyPolicy().automation_permitted(ApplyMechanism.MANUAL)
     assert permitted is False
-    assert "LinkedIn" in reason or "human" in reason.lower() or "Live apply" in reason
+    assert "yourself" in reason.lower() or "linkedin" in reason.lower()
 
 
 def test_captcha_stops_automation():
@@ -23,7 +23,7 @@ def test_captcha_stops_automation():
         ApplyMechanism.CAREER_PAGE, page_html="<div class='g-recaptcha'></div>"
     )
     assert ok is False
-    assert "CAPTCHA" in reason or "Live apply" in reason or "Dry-run" in reason
+    assert "yourself" in reason.lower() or "security" in reason.lower()
 
 
 def test_attempt_never_submitted_without_live_flag():

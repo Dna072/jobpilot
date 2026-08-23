@@ -264,7 +264,7 @@ def process_job(job_id: str) -> dict:
                     session.add(
                         Notification(
                             kind="create_repository",
-                            subject=f"ACTION REQUIRED — Create Repository: {spec.title}",
+                            subject=f"Please create a GitHub repository for {spec.title}",
                             body=body,
                             sent=bool(result.get("sent")),
                         )
@@ -327,8 +327,8 @@ def process_job(job_id: str) -> dict:
                 session.add(
                     Notification(
                         kind="human_action",
-                        subject=f"ACTION REQUIRED — {package.company} — {package.role}",
-                        body=attempt.human_action or "",
+                        subject=f"Please apply to {package.role} at {package.company}",
+                        body=result.get("body") or attempt.human_action or "",
                         sent=bool(result.get("sent")),
                     )
                 )

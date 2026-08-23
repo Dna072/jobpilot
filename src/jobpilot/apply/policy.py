@@ -41,32 +41,26 @@ class ApplyPolicy:
         config = load_app_config()
         apply_cfg = config.get("applications", {})
         if not settings.jobpilot_allow_live_apply:
-            return False, "Live apply is disabled (JOBPILOT_ALLOW_LIVE_APPLY=false)."
+            return False, "Please submit this one yourself on the company's site."
         if apply_cfg.get("dry_run", True):
-            return False, "Dry-run is enabled; packages are prepared but not submitted."
+            return False, "Please submit this one yourself on the company's site."
         if apply_cfg.get("linkedin_automation"):
-            return False, "LinkedIn automation is forbidden by policy even if misconfigured."
+            return False, "Please apply on LinkedIn yourself."
         if mechanism == ApplyMechanism.MANUAL:
-            return False, "This mechanism requires a human (LinkedIn or unidentified portal)."
+            return False, "Please apply on the company's site yourself."
         if page_html and any(m in page_html.lower() for m in CAPTCHA_MARKERS):
-            return False, "CAPTCHA or bot-challenge detected; stopping without bypass."
+            return False, "The page asked for a security check. Please complete that and submit yourself."
         if mechanism == ApplyMechanism.GREENHOUSE and not apply_cfg.get("allow_greenhouse_http"):
-            return False, "Greenhouse public job board automation is off (ToS-safe default)."
+            return False, "Please submit this one yourself on the company's site."
         if mechanism == ApplyMechanism.LEVER and not apply_cfg.get("allow_lever_http"):
-            return False, "Lever form automation is off (ToS-safe default)."
+            return False, "Please submit this one yourself on the company's site."
         if mechanism in {ApplyMechanism.CAREER_PAGE, ApplyMechanism.OTHER_ATS}:
             if not apply_cfg.get("allow_browser_automation"):
-                return False, "Browser form automation is disabled."
+                return False, "Please submit this one yourself on the company's site."
         return True, "Permitted"
 
     def remaining_human_action(self, mechanism: ApplyMechanism, reason: str) -> str:
-        if mechanism == ApplyMechanism.GREENHOUSE:
-            return (
-                "Open the Greenhouse job URL, upload the tailored PDF, paste screening answers, "
-                "complete any CAPTCHA/login, and submit. Then mark the application complete in JobPilot."
-            )
-        if mechanism == ApplyMechanism.LEVER:
-            return "Open the Lever posting, attach the tailored CV, complete any human checks, and submit."
-        if mechanism == ApplyMechanism.MANUAL:
-            return "This posting cannot be automated (LinkedIn or prohibited portal). Apply in the official UI."
-        return reason
+        return (
+            "Open the job link, attach the CV, paste the cover letter, and submit the form. "
+            "If the site asks you to sign in or complete a check, do that there."
+        )
