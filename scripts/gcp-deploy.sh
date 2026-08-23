@@ -111,6 +111,14 @@ import_secret google_secret_manager_secret.email_from jobpilot-email-from
 import_secret google_secret_manager_secret.email_to jobpilot-email-to
 import_secret google_secret_manager_secret.github_token jobpilot-github-token
 
+# Deploy creates the Artifact Registry repo before Cloud Build; adopt it if Terraform
+# does not already manage it (otherwise apply fails with HTTP 409).
+if gcloud artifacts repositories describe jobpilot --location="$REGION" --project="$PROJECT" >/dev/null 2>&1; then
+  terraform -chdir="$TF_DIR" import -input=false \
+    google_artifact_registry_repository.jobpilot \
+    "projects/${PROJECT}/locations/${REGION}/repositories/jobpilot" >/dev/null 2>&1 || true
+fi
+
 terraform -chdir="$TF_DIR" apply ${TF_AUTO_APPROVE:-}
 
 if [[ -f "$ROOT/.env" ]]; then

@@ -41,7 +41,7 @@ variable "web_image" {
 variable "db_tier" {
   type        = string
   default     = "db-f1-micro"
-  description = "Cloud SQL tier. db-f1-micro is the cheapest shared instance."
+  description = "Cloud SQL tier. db-f1-micro is the cheapest shared-core instance and requires edition ENTERPRISE (not ENTERPRISE_PLUS)."
 }
 
 variable "deletion_protection" {

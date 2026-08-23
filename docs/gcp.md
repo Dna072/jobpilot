@@ -73,6 +73,18 @@ gcloud projects add-iam-policy-binding "$GCP_PROJECT" \
 
 If that binding itself is denied, the project Owner must grant you `roles/cloudbuild.builds.editor` or `roles/editor`. Wait 1–2 minutes, then re-run `./scripts/gcp-deploy.sh`.
 
+### Artifact Registry `409 already exists`
+
+`gcp-deploy.sh` creates the `jobpilot` Docker repo so Cloud Build can push, then Terraform also declares that repo. Re-run after pull — the script imports the existing repo so apply does not try to create it again.
+
+### Cloud SQL `Invalid Tier (db-f1-micro) for (ENTERPRISE_PLUS)`
+
+PostgreSQL 16 defaults to Enterprise Plus, which only accepts `db-perf-optimized-N-*` machines. The Terraform now sets `edition = "ENTERPRISE"` so `db-f1-micro` is valid. If a failed `jobpilot` instance is stuck, delete it before re-applying:
+
+```bash
+gcloud sql instances delete jobpilot --project=skandix-app
+```
+
 ## After deploy
 
 ```bash
