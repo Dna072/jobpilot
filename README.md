@@ -8,11 +8,11 @@ This is not a spray-and-pray auto-apply bot. It maximizes *quality-adjusted* app
 
 The `jobpilot` workspace started empty. Candidate evidence was loaded from:
 
-- Existing PDF resume (`cv/source/Derrick_Adjei_Resume.pdf`)
+- Official resumes: `cv/source/Derrick_Adjei_Data_Engineer.pdf` and `cv/source/Derrick_Adjei_Backend_Engineer.pdf`
 - GitHub [`Dna072`](https://github.com/Dna072)
 - Portfolio site [`dna072.github.io`](https://dna072.github.io)
 
-The three LaTeX masters did **not** exist; they were created from that evidence under `cv/` and must not be overwritten by tailoring.
+The three LaTeX masters under `cv/` use the same Leslie Cheng template as those PDFs (Fira Sans, navy bars) and must not be overwritten by tailoring. Compile with `./scripts/compile-resumes.sh`.
 
 Full write-up: [`docs/candidate-profile.md`](docs/candidate-profile.md).
 

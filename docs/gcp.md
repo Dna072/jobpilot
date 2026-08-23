@@ -25,6 +25,8 @@ Region default: **europe-north1** (Finland). Cloud Scheduler itself is created i
 
 Estimated cost at idle: Cloud SQL f1-micro dominates (~USD 7–12/month). Cloud Run scales to zero.
 
+The API image installs Tectonic so tailored CVs compile with the same Fira Sans / navy-bar look as `cv/source/*.pdf`.
+
 ## Prerequisites
 
 1. A GCP project with billing enabled

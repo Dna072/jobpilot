@@ -16,7 +16,7 @@
 | GitHub | https://github.com/Dna072 | GitHub, resume |
 | Portfolio | https://dna072.github.io | GitHub Pages |
 | LinkedIn | https://www.linkedin.com/in/derrick-adjei-5421289a/ | portfolio `site.ts` |
-| Headline on current PDF | Data Engineer | `cv/source/Derrick_Adjei_Resume.pdf` |
+| Headline on current PDFs | Data Engineer / Backend Engineer | `cv/source/Derrick_Adjei_Data_Engineer.pdf`, `cv/source/Derrick_Adjei_Backend_Engineer.pdf` |
 
 ## Target roles (configurable; defaults from candidate brief)
 
@@ -153,7 +153,7 @@ At discovery time `Dna072/jobpilot` contained only `README.md` (`# jobpilot / Jo
 2. Local clones of portfolio repositories
 3. Existing JobPilot configuration, database, or agents
 
-Only **one** PDF resume was found (data-engineer oriented). The three-resume LaTeX system is created in implementation from this profile, without inventing employers, metrics, or technologies.
+Official backend and data PDFs plus matching Leslie Cheng `.tex` sources were added on 2026-08-23. The frontend master uses that same template; no official frontend PDF was provided.
 
 ## Profile rules for every agent
 

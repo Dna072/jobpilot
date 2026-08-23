@@ -1,16 +1,23 @@
 # Resume Analysis
 
-**Generated:** 2026-08-20  
-**Found in workspace:** none of the three LaTeX masters.  
-**Found elsewhere:** one PDF, data-engineer oriented.
-
-Path copied for reference (read-only source, not a master to overwrite):
+**Updated:** 2026-08-23  
+**Official source PDFs (do not overwrite):**
 
 ```text
-cv/source/Derrick_Adjei_Resume.pdf
+cv/source/Derrick_Adjei_Data_Engineer.pdf
+cv/source/Derrick_Adjei_Backend_Engineer.pdf
+cv/source/Derrick_Adjei_Resume.pdf   # earlier discovery copy
 ```
 
-The implementation phase recreates three **separate** LaTeX masters from this PDF plus the candidate profile. It does not merge them into one generic CV.
+Editable LaTeX masters use the **Leslie Cheng** template (Fira Sans, navy section bars) so compiled PDFs keep that look:
+
+```text
+cv/data-engineer/master.tex
+cv/backend-engineer/master.tex
+cv/frontend-engineer/master.tex
+```
+
+Tailoring copies a master into `cv/generated/` and never overwrites these files.
 
 ## Data Engineer Resume (existing PDF)
 
@@ -49,7 +56,7 @@ Kafka/streaming, dbt, Snowflake/Databricks, orchestration at KPMG (if any), infr
 
 ## Backend Engineer Resume
 
-**Status at discovery:** does not exist as a separate document.
+**Status:** official PDF + LaTeX provided 2026-08-23 (`cv/source/Derrick_Adjei_Backend_Engineer.pdf`).
 
 ### Strengths available to build from
 
@@ -81,7 +88,7 @@ Public microservice mesh, Kafka, gRPC, deep Java, production k8s at an employer.
 
 ## Frontend Engineer Resume
 
-**Status at discovery:** does not exist as a separate document.
+**Status:** no official source PDF. Master uses the same Leslie Cheng template as the backend and data CVs so generated PDFs stay visually consistent.
 
 ### Strengths available to build from
 
@@ -115,7 +122,7 @@ Design-system ownership, a11y audits, SSR/RSC performance write-ups, test IDs / 
 
 | Dimension | Data (existing) | Backend (to create) | Frontend (to create) |
 |---|---|---|---|
-| Exists today | Yes (PDF) | No | No |
+| Exists today | Yes (official PDF + TeX) | Yes (official PDF + TeX) | TeX only (same look) |
 | Employment proof | NTC warehouse + KPMG automation | NTC/TPG + brief lead-IT | Thin; products carry the story |
 | Portfolio proof | Sparkify, Airflow, STEDI | MediaVault, RenderFlow, ClipForge | MedLink, Arctiq, Portfolio, SPAs |
 | Main gap | Streaming / dbt / modern AE tools | Kafka + employer k8s | Dedicated FE narrative + a11y/perf |

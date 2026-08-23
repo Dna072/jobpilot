@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from jobpilot.agents.builder import scaffold_project
 from jobpilot.agents.planner import STREAMING_SPEC, plan_from_gap
 from jobpilot.agents.qa import qa_project
@@ -58,3 +60,17 @@ def test_status_format():
     })
     assert "342" in text
     assert "Jobs discovered" in text
+
+
+def test_masters_use_official_leslie_cheng_template():
+    root = Path(__file__).resolve().parents[1]
+    for rel in (
+        "cv/data-engineer/master.tex",
+        "cv/backend-engineer/master.tex",
+        "cv/frontend-engineer/master.tex",
+    ):
+        text = (root / rel).read_text(encoding="utf-8")
+        assert "FiraSans" in text
+        assert "0D47A1" in text
+        assert "Derrick Adjei" in text
+        assert "resumeEntryTSDL" in text

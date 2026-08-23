@@ -1,60 +1,236 @@
 % Frontend Engineer master resume — Derrick Adjei
+% Same Leslie Cheng look as the official backend and data PDFs.
 % Do not overwrite this file during tailoring. Copy into cv/generated/.
-\documentclass[10pt,a4paper]{article}
-\usepackage[margin=1.4cm]{geometry}
-\usepackage[T1]{fontenc}
-\usepackage{lmodern}
-\usepackage[hidelinks]{hyperref}
+%-------------------------------------
+% LaTeX Resume for Software Engineers
+% Author : Leslie Cheng
+% License : MIT
+%-------------------------------------
+
+\documentclass[a4paper,12pt]{article}[leftmargin=*]
+\usepackage[empty]{fullpage}
 \usepackage{enumitem}
-\usepackage{titlesec}
-\pagestyle{empty}
-\setlength{\parindent}{0pt}
-\setlist[itemize]{leftmargin=1.1em,itemsep=2pt,topsep=2pt,parsep=0pt}
-\titleformat{\section}{\large\bfseries\uppercase}{}{0pt}{}[\titlerule]
-\titlespacing*{\section}{0pt}{8pt}{4pt}
+\usepackage{ifxetex}
+\ifxetex
+  \usepackage{fontspec}
+  \usepackage[xetex]{hyperref}
+\else
+  \usepackage[utf8]{inputenc}
+  \usepackage[T1]{fontenc}
+  \usepackage[pdftex]{hyperref}
+\fi
+\usepackage{fontawesome}
+\usepackage[sfdefault,light]{FiraSans}
+\usepackage{anyfontsize}
+\usepackage{xcolor}
+\usepackage{tabularx}
+
+%-------------------------- SETTINGS HERE --------------------------
+\def \fullname {Derrick Adjei}
+\def \subtitle {Frontend Engineer}
+
+\def \linkedinicon {\faLinkedin}
+\def \linkedinlink {https://www.linkedin.com/in/derrick-adjei-5421289a/}
+\def \linkedintext {/derrick-adjei}
+
+\def \phoneicon {\faPhone}
+\def \phonetext {+46-76-251-7998}
+\def \emailicon {\faEnvelope}
+\def \emaillink {mailto:derrick.adjei.eng@gmail.com}
+\def \emailtext {derrick.adjei.eng@gmail.com}
+\def \githubicon {\faGithub}
+\def \githublink {https://github.com/Dna072/}
+\def \githubtext {Github}
+
+\def \websiteicon {\faGlobe}
+\def \websitelink {https://dna072.github.io/}
+\def \websitetext {dna072.github.io}
+
+\def \headertype {\doublecol}
+
+\def \entryspacing {-0pt}
+\def \bulletstyle {\faAngleRight}
+
+\definecolor{primary}{HTML}{000000}
+\definecolor{secondary}{HTML}{0D47A1}
+\definecolor{accent}{HTML}{263238}
+\definecolor{links}{HTML}{1565C0}
+
+\def \linkedin {\linkedinicon \hspace{3pt}\href{\linkedinlink}{\linkedintext}}
+\def \phone {\phoneicon \hspace{3pt}{ \phonetext}}
+\def \email {\emailicon \hspace{3pt}\href{\emaillink}{\emailtext}}
+\def \github {\githubicon \hspace{3pt}\href{\githublink}{\githubtext}}
+\def \website {\websiteicon \hspace{3pt}\href{\websitelink}{\websitetext}}
+
+\addtolength{\oddsidemargin}{-0.55in}
+\addtolength{\evensidemargin}{-0.55in}
+\addtolength{\textwidth}{1.1in}
+\addtolength{\topmargin}{-0.7in}
+\addtolength{\textheight}{1.1in}
+
+\hypersetup{
+    colorlinks=true,
+    urlcolor=links,
+}
+
+\raggedbottom
+\raggedright
+\setlength{\tabcolsep}{0in}
+
+\renewcommand{\section}[2]{\vspace{5pt}
+  \colorbox{secondary}{\color{white}\raggedbottom\normalsize\textbf{{#1}{\hspace{7pt}#2}}}
+}
+
+\newcommand{\resumeEntryStart}{\begin{itemize}[leftmargin=2.5mm]}
+\newcommand{\resumeEntryEnd}{\end{itemize}\vspace{\entryspacing}}
+\newcommand{\resumeItemListStart}{\begin{itemize}[leftmargin=4.5mm]}
+\newcommand{\resumeItemListEnd}{\end{itemize}}
+
+\renewcommand{\labelitemii}{\bulletstyle}
+\newcommand{\resumeItem}[1]{
+  \item\small{
+    {#1 \vspace{-2pt}}
+  }
+}
+
+\newcommand{\resumeEntryTSDL}[4]{
+  \vspace{-1pt}\item[]
+    \begin{tabularx}{0.99\textwidth}{X@{\hspace{60pt}}r}
+      \textbf{\color{primary}#1} & {\firabook\color{accent}\small#2} \\
+      \textit{\color{accent}\small#3} & \textit{\color{accent}\small#4} \\
+    \end{tabularx}\vspace{-7pt}
+}
+
+\newcommand{\resumeEntryTD}[2]{
+  \vspace{-1pt}\item[]
+    \begin{tabularx}{0.97\textwidth}{X@{\hspace{60pt}}r}
+      \textbf{\color{primary}#1} & {\firabook\color{accent}\small#2} \\
+    \end{tabularx}\vspace{-6pt}
+}
+
+\newcommand{\resumeEntryS}[2]{
+  \item[]\small{
+    \textbf{\color{primary}#1 }{ #2 \vspace{-6pt}}
+  }
+}
+
+\newcommand{\doublecol}[6]{
+  \begin{tabularx}{\textwidth}{Xr}
+    {
+      \begin{tabular}[c]{l}
+        \fontsize{35}{45}\selectfont{\color{primary}{{\textbf{\fullname}}}} \\
+        {\textit{\subtitle}}
+      \end{tabular}
+    } & {
+      \begin{tabular}[c]{l@{\hspace{1.5em}}l}
+        {\small#4} & {\small#1} \\
+        {\small#5} & {\small#2} \\
+        {\small#6} & {\small#3}
+      \end{tabular}
+    }
+  \end{tabularx}
+}
+
+\newcommand{\singlecol}[6]{
+  \begin{tabularx}{\textwidth}{Xr}
+    {
+      \begin{tabular}[b]{l}
+        \fontsize{35}{45}\selectfont{\color{primary}{{\textbf{\fullname}}}} \\
+        {\textit{\subtitle}}
+      \end{tabular}
+    } & {
+      \begin{tabular}[c]{l}
+        {\small#1} \\
+        {\small#2} \\
+        {\small#3} \\
+        {\small#4} \\
+        {\small#5} \\
+        {\small#6}
+      \end{tabular}
+    }
+  \end{tabularx}
+}
 
 \begin{document}
-\begin{center}
-{\LARGE\bfseries Derrick Adjei}\\[2pt]
-{\large Frontend / Full-Stack Engineer}\\[4pt]
-Stockholm, Sweden \textbullet{} +46-76-251-7998 \textbullet{}
-\href{mailto:derrick.adjei.eng@gmail.com}{derrick.adjei.eng@gmail.com}\\
-\href{https://github.com/Dna072}{github.com/Dna072} \textbullet{}
-\href{https://dna072.github.io}{dna072.github.io} \textbullet{}
-\href{https://www.linkedin.com/in/derrick-adjei-5421289a/}{LinkedIn}
-\end{center}
 
-\section{Experience}
-\textbf{KPMG Sweden} \hfill 2023 -- Present\\
-\textit{System Specialist -- Data \& Process Automation} \hfill Stockholm, Sweden
-\begin{itemize}
-  \item Delivered internal apps and operational dashboards used by business stakeholders.
-  \item Translated process requirements into usable digital workflows.
-\end{itemize}
+\headertype{\linkedin}{\github}{\website}{\phone}{\email}{}
+\vspace{-5pt}
 
-\textbf{National Teaching Council} \hfill 2018 -- 2025\\
-\textit{Software Engineer / Lead IT Officer} \hfill Greater Accra, Ghana
-\begin{itemize}
-  \item Production frontend/backend delivery on Teacher Portal Ghana (\href{https://tpg.ntc.gov.gh}{tpg.ntc.gov.gh}).
-  \item JavaScript, Node.js, Python, and PostgreSQL for nationwide teacher-profession workflows.
-\end{itemize}
+\vspace{5pt}
+\section{\faPieChart}{Experience}
+  \resumeEntryStart
+  \vspace{-10pt}
+    \resumeEntryTSDL
+      {\href{https://kpmg.se/}{KPMG Sweden} - Data Automation (System Specialist)}{2023 -- Present}
+      {KPMG is a leading provider of professional services in Sweden}{Stockholm, Sweden}
+    \resumeItemListStart
+      \resumeItem {Delivered internal apps and operational dashboards used by business stakeholders}
+      \resumeItem {Translated process requirements into usable digital workflows}
+    \resumeItemListEnd
+  \resumeEntryEnd
 
-\section{Product \& interface work}
-\textit{NexDev products are live systems. Media SaaS UIs are portfolio projects, not employers.}
-\begin{itemize}
-  \item \textbf{MedLink} --- TypeScript, React, Next.js, Vite, Node.js, Tailwind. \href{https://medlink.nexdev.tech}{medlink.nexdev.tech}
-  \item \textbf{Arctiq} --- React/Vite/Next with Express-backed workflows. \href{https://arctiq.nexdev.tech}{arctiq.nexdev.tech}
-  \item \textbf{SIMSGH} --- school operations product (NexDev). \href{https://simsgh.com}{simsgh.com}
-  \item \textbf{Portfolio site} --- Next.js + TypeScript. \href{https://github.com/Dna072/Portfolio}{github.com/Dna072/Portfolio}
-  \item \textbf{StreamPulse / MediaVault UIs} --- React + TypeScript dashboards on live APIs (portfolio).
-\end{itemize}
+  \resumeEntryStart
+    \vspace{-7pt}
+    \resumeEntryTSDL
+      {\href{https://ntc.gov.gh/}{National Teaching Council} - Lead IT Officer/Backend Developer}{2018 -- 2022}
+      {National Teaching Council is a government agency established to regulate the teaching profession in Ghana.}{Greater Accra, Ghana}
+    \resumeItemListStart
+      \resumeItem {Production frontend and backend delivery on {\href{https://tpg.ntc.gov.gh}{Teacher Portal Ghana}}}
+      \resumeItem {JavaScript, Node.js, Python, and PostgreSQL for nationwide teacher-profession workflows}
+    \resumeItemListEnd
+  \resumeEntryEnd
 
-\section{Skills}
-\textbf{UI:} React, Next.js, TypeScript, JavaScript, Tailwind CSS, Vite\\
-\textbf{Delivery:} REST/API integration, Node.js, Express, responsive layouts\\
-\textbf{Also:} Python, PostgreSQL, Docker --- used on adjacent full-stack work
+\section{\faGears} {Frontend Skills}
+ \resumeEntryStart
+  \resumeEntryS
+    {Understanding of:}
+    {UI Architecture, Component Design, Responsive Layouts, REST/API Integration, Debugging, Teamwork, Problem solving}
 
-\section{Education}
-\textbf{MSc Data Science}, Uppsala University \hfill 2022 -- 2024\\
-\textbf{BSc Computer Engineering}, University of Ghana \hfill 2013 -- 2017
+  \resumeEntryS
+    {Experience with:}
+    {\color{black} React, Next.js, TypeScript, JavaScript, Tailwind CSS, Vite, Node.js, Express, REST, Docker, CI/CD}
+ \resumeEntryEnd
+
+\vspace{2pt}
+\section{\faGears} {Projects}
+ \resumeEntryStart
+  \resumeEntryS
+    {}
+    {
+        {\href{https://medlink.nexdev.tech}{MedLink}} - {TypeScript, React, Next.js, Vite, Node.js, Tailwind}
+    }
+  \resumeEntryS
+    {}
+    {
+        {\href{https://arctiq.nexdev.tech}{Arctiq}} - {React/Vite/Next with Express-backed workflows}
+    }
+  \resumeEntryS
+    {}
+    {
+        {\href{https://simsgh.com}{SIMSGH}} - {School operations product (NexDev)}
+    }
+  \resumeEntryS
+    {}
+    {
+        {\href{https://github.com/Dna072/Portfolio}{Portfolio site}} - {Next.js + TypeScript}
+    }
+ \resumeEntryEnd
+
+\vspace{2pt}
+\section{\faGraduationCap}{Education}
+  \resumeEntryStart
+    \vspace{-10pt}
+    \resumeEntryTSDL
+      {Uppsala University}{2022 -- 2024}
+      {MSc Data Science}
+      {Uppsala, Sweden}
+  \resumeEntryEnd
+  \resumeEntryStart
+    \vspace{-10pt}
+    \resumeEntryTSDL
+      {University of Ghana}{2013 -- 2017}
+      {BSc Computer Engineering}
+      {Accra, Ghana}
+  \resumeEntryEnd
+
 \end{document}
