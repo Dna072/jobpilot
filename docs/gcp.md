@@ -87,6 +87,10 @@ PostgreSQL 16 defaults to Enterprise Plus, which only accepts `db-perf-optimized
 gcloud sql instances delete jobpilot --project=skandix-app
 ```
 
+### Cloud Run `reserved env names: PORT`
+
+Cloud Run sets `PORT` itself (this repo listens on 8080 via `container_port`). Do not put `PORT` in Terraform `env` blocks. Pull and re-apply if you hit this error.
+
 ## After deploy
 
 ```bash

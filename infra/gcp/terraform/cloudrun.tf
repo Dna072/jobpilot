@@ -1,6 +1,5 @@
 locals {
   run_env = [
-    { name = "PORT", value = "8080" },
     { name = "JOBPILOT_ENV", value = "production" },
     { name = "JOBPILOT_CONFIG", value = "config/jobpilot.yaml" },
     { name = "JOBPILOT_ALLOW_LIVE_APPLY", value = "false" },
@@ -105,10 +104,6 @@ resource "google_cloud_run_v2_service" "web" {
       }
       resources {
         limits = { cpu = "1", memory = "512Mi" }
-      }
-      env {
-        name  = "PORT"
-        value = "8080"
       }
       env {
         name  = "API_URL"
