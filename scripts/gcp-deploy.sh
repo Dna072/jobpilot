@@ -15,7 +15,25 @@ TF_DIR="$ROOT/infra/gcp/terraform"
 REPO="${REGION}-docker.pkg.dev/${PROJECT}/jobpilot"
 
 command -v gcloud >/dev/null
-command -v terraform >/dev/null
+if ! command -v terraform >/dev/null || ! terraform version 2>/dev/null | grep -q '^Terraform v'; then
+  cat >&2 <<'EOF'
+Terraform is not installed (Cloud Shell ships a stub that only prints install help).
+Install the real binary, then re-run this script:
+
+  mkdir -p "$HOME/bin"
+  wget -O /tmp/terraform.zip https://releases.hashicorp.com/terraform/1.9.8/terraform_1.9.8_linux_amd64.zip
+  unzip -o /tmp/terraform.zip -d /tmp
+  mv -f /tmp/terraform "$HOME/bin/terraform"
+  export PATH="$HOME/bin:$PATH"
+  terraform version
+
+Put this in $HOME/.customize_environment so Cloud Shell keeps it:
+
+  mkdir -p "$HOME/bin"
+  export PATH="$HOME/bin:$PATH"
+EOF
+  exit 1
+fi
 
 gcloud config set project "$PROJECT"
 gcloud auth configure-docker "${REGION}-docker.pkg.dev" --quiet
