@@ -50,7 +50,9 @@ resource "google_cloud_run_v2_service" "api" {
     }
     containers {
       image = var.api_image
-      ports { container_port = 8080 }
+      ports {
+        container_port = 8080
+      }
       resources {
         limits = { cpu = "1", memory = "1Gi" }
       }
@@ -98,7 +100,9 @@ resource "google_cloud_run_v2_service" "web" {
     }
     containers {
       image = var.web_image
-      ports { container_port = 8080 }
+      ports {
+        container_port = 8080
+      }
       resources {
         limits = { cpu = "1", memory = "512Mi" }
       }
