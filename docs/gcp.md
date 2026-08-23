@@ -28,7 +28,7 @@ Estimated cost at idle: Cloud SQL f1-micro dominates (~USD 7–12/month). Cloud 
 ## Prerequisites
 
 1. A GCP project with billing enabled
-2. `gcloud` and `terraform` installed
+2. `gcloud` and real Terraform **1.15.9** (latest stable as of 2026-08-19). Cloud Shell’s `terraform` is a stub. There is no 1.59.9.
 3. You can create Cloud SQL and Cloud Run resources (Owner or a custom role with those APIs)
 
 ```bash

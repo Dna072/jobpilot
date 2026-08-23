@@ -21,7 +21,7 @@ Terraform is not installed (Cloud Shell ships a stub that only prints install he
 Install the real binary, then re-run this script:
 
   mkdir -p "$HOME/bin"
-  wget -O /tmp/terraform.zip https://releases.hashicorp.com/terraform/1.9.8/terraform_1.9.8_linux_amd64.zip
+  wget -O /tmp/terraform.zip https://releases.hashicorp.com/terraform/1.15.9/terraform_1.15.9_linux_amd64.zip
   unzip -o /tmp/terraform.zip -d /tmp
   mv -f /tmp/terraform "$HOME/bin/terraform"
   export PATH="$HOME/bin:$PATH"
