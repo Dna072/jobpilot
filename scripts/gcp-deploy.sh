@@ -76,6 +76,23 @@ db_tier    = "${DB_TIER:-db-f1-micro}"
 EOF
 
 terraform -chdir="$TF_DIR" init
+
+# If SMTP secrets were created by gcp-secrets.sh first, adopt them so apply does not fail.
+import_secret() {
+  local addr="$1"
+  local secret_id="$2"
+  if gcloud secrets describe "$secret_id" --project="$PROJECT" >/dev/null 2>&1; then
+    terraform -chdir="$TF_DIR" import -input=false "$addr" \
+      "projects/${PROJECT}/secrets/${secret_id}" >/dev/null 2>&1 || true
+  fi
+}
+import_secret google_secret_manager_secret.smtp_host jobpilot-smtp-host
+import_secret google_secret_manager_secret.smtp_username jobpilot-smtp-username
+import_secret google_secret_manager_secret.smtp_password jobpilot-smtp-password
+import_secret google_secret_manager_secret.email_from jobpilot-email-from
+import_secret google_secret_manager_secret.email_to jobpilot-email-to
+import_secret google_secret_manager_secret.github_token jobpilot-github-token
+
 terraform -chdir="$TF_DIR" apply ${TF_AUTO_APPROVE:-}
 
 if [[ -f "$ROOT/.env" ]]; then

@@ -22,15 +22,28 @@ done < "$ENV_FILE"
 set +a
 
 gcloud config set project "$PROJECT"
+gcloud services enable secretmanager.googleapis.com --project="$PROJECT" --quiet
+
+ensure_secret() {
+  local secret="$1"
+  if gcloud secrets describe "$secret" --project="$PROJECT" >/dev/null 2>&1; then
+    return
+  fi
+  gcloud secrets create "$secret" \
+    --project="$PROJECT" \
+    --replication-policy=automatic
+  echo "created $secret"
+}
 
 put() {
   local secret="$1"
   local value="${2:-}"
+  ensure_secret "$secret"
   if [[ -z "$value" || "$value" == "unset" ]]; then
-    echo "skip $secret (empty)"
+    echo "skip $secret (empty value; secret container exists)"
     return
   fi
-  printf '%s' "$value" | gcloud secrets versions add "$secret" --data-file=-
+  printf '%s' "$value" | gcloud secrets versions add "$secret" --project="$PROJECT" --data-file=-
   echo "updated $secret"
 }
 

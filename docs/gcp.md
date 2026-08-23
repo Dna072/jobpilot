@@ -47,6 +47,18 @@ chmod +x scripts/gcp-deploy.sh scripts/gcp-secrets.sh
 
 The script builds images with Cloud Build, applies Terraform, and uploads SMTP/GitHub secrets from `.env`.
 
+### Secret `NOT_FOUND` / `Listed 0 items`
+
+`gcloud secrets list --filter="name~jobpilot"` showing nothing means Terraform has not created the Secret Manager containers yet. `gcp-secrets.sh` now creates those secrets if they are missing, then writes your `.env` values.
+
+```bash
+export GCP_PROJECT=skandix-app
+./scripts/gcp-secrets.sh
+gcloud secrets list --filter="name~jobpilot"
+```
+
+That only loads mail settings. Cloud Run / Cloud SQL still require `./scripts/gcp-deploy.sh` after Terraform is installed.
+
 ### Cloud Build `PERMISSION_DENIED`
 
 `gcloud builds submit` needs **Cloud Build Editor** (or Owner) on the project. Creating an Artifact Registry repo is a different permission, so that step can succeed while the build still fails.
