@@ -38,12 +38,14 @@ class Settings(BaseSettings):
     adzuna_app_key: str = ""
     github_token: str = ""
     github_username: str = "Dna072"
+    lever_api_key: str = ""
     http_user_agent: str = "JobPilot/0.1 (+https://github.com/Dna072/jobpilot)"
 
     port: int = 8080
     jobpilot_ops_token: str = ""
     gcs_bucket: str = ""
     gcs_prefix: str = "jobpilot"
+    public_base_url: str = ""
 
 
 @lru_cache
@@ -67,3 +69,7 @@ def load_app_config(config_path: str | None = None) -> dict[str, Any]:
 
 def repo_path(*parts: str) -> Path:
     return ROOT.joinpath(*parts)
+
+
+def public_base_url() -> str:
+    return get_settings().public_base_url.rstrip("/")

@@ -197,6 +197,7 @@ class Application(Base):
     confirmation_evidence: Mapped[dict[str, Any] | None] = mapped_column(JSON)
     error: Mapped[str | None] = mapped_column(Text)
     human_action: Mapped[str | None] = mapped_column(Text)
+    approval_token: Mapped[str | None] = mapped_column(String(80))
     match_report: Mapped[dict[str, Any]] = mapped_column(JSON, default=dict)
     submitted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
@@ -282,3 +283,20 @@ def get_session():
 def init_db(url: str | None = None) -> None:
     engine = get_engine(url)
     Base.metadata.create_all(engine)
+    _ensure_columns(engine)
+
+
+def _ensure_columns(engine) -> None:
+    from sqlalchemy import inspect, text
+
+    inspector = inspect(engine)
+    if "applications" not in inspector.get_table_names():
+        return
+    columns = {col["name"] for col in inspector.get_columns("applications")}
+    if "approval_token" not in columns:
+        with engine.begin() as conn:
+            conn.execute(text("ALTER TABLE applications ADD COLUMN approval_token VARCHAR(80)"))
+    with engine.begin() as conn:
+        conn.execute(
+            text("CREATE UNIQUE INDEX IF NOT EXISTS ix_applications_approval_token ON applications (approval_token)")
+        )

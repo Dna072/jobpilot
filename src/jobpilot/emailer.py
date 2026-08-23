@@ -38,9 +38,9 @@ def email_project_complete(project: str, body: str) -> dict:
 
 def email_human_action(package: ApplicationPackage) -> dict:
     company = display_company_name(package.company)
-    subject = f"Please apply to {package.role} at {company}"
+    subject = f"Please review the application to {package.role} at {company}"
     body = render_application_email(package)
-    return _send(subject, body)
+    return _send(subject, body, attachments=_resume_attachments(package))
 
 
 def email_submitted(package: ApplicationPackage, confirmation: str) -> dict:
@@ -48,7 +48,28 @@ def email_submitted(package: ApplicationPackage, confirmation: str) -> dict:
     subject = f"Application sent: {package.role} at {company}"
     extra = f"The company should have a record of this application. Reference: {confirmation}." if confirmation else ""
     body = render_application_email(package, extra=extra)
-    return _send(subject, body)
+    return _send(subject, body, attachments=_resume_attachments(package))
+
+
+def email_github_token_needed(repo: str, github_url: str) -> dict:
+    url = github_url or f"https://github.com/Dna072/{repo}"
+    body = "\n".join(
+        [
+            "Hi Derrick,",
+            "",
+            f"The {repo} repository exists ({url}), but the starter code cannot be added yet.",
+            "A GitHub personal access token with access to your repositories is missing or still set to a placeholder.",
+            "",
+            "Please:",
+            "1. Open https://github.com/settings/tokens",
+            '2. Create a token with the "repo" scope',
+            "3. Store it as the jobpilot-github-token secret in Google Cloud, or as GITHUB_TOKEN in .env",
+            "4. Run the repository watch again (or wait for the next 15-minute check)",
+            "",
+            "After that, the starter files will be committed to the empty repository.",
+        ]
+    )
+    return _send(f"A GitHub token is needed to add code to {repo}", body)
 
 
 def email_failed(package: ApplicationPackage, reason: str) -> dict:
@@ -58,7 +79,7 @@ def email_failed(package: ApplicationPackage, reason: str) -> dict:
         package,
         extra="The form could not be completed automatically. Please submit it yourself using the link and cover letter below.",
     )
-    return _send(subject, body)
+    return _send(subject, body, attachments=_resume_attachments(package))
 
 
 def email_weekly(report: WeeklyReport) -> dict:
@@ -68,45 +89,62 @@ def email_weekly(report: WeeklyReport) -> dict:
 def render_application_email(package: ApplicationPackage, extra: str = "") -> str:
     company = display_company_name(package.company)
     place = ", ".join(p for p in (package.location, package.country) if p)
-    next_step = package.remaining_human_action or (
-        "Open the job link, attach the CV, paste the cover letter, and submit the form. "
-        "If the site asks you to sign in or complete a check, do that there."
-    )
     lines = [
-        f"Hi Derrick,",
+        "Hi Derrick,",
         "",
-        f"There is a role at {company} that looks like a good fit. Please apply using the link and letter below.",
+        f"There is a role at {company} that looks like a good fit. Nothing has been sent to the company yet. Please review the CV, cover letter, and answers first.",
         "",
         f"Role: {package.role}",
         f"Company: {company}",
     ]
     if place:
         lines.append(f"Location: {place}")
-    lines.extend(
-        [
-            f"Apply here: {package.job_url}",
-            "",
-            "What to do:",
-            next_step,
-        ]
-    )
-    if package.resume_pdf_path:
-        lines.extend(["", f"CV to attach: {package.resume_pdf_path}"])
+    lines.append(f"Company application page: {package.job_url}")
+    if package.preview_url:
+        lines.extend(
+            [
+                "",
+                "Review the CV, cover letter, and answers here:",
+                package.preview_url,
+                "",
+                "On that page you can send the application automatically, or keep the draft and submit it yourself on the company site.",
+            ]
+        )
     if extra:
         lines.extend(["", extra])
     lines.extend(
         [
             "",
-            "Cover letter (paste this into the application — do not add anything else):",
+            "Cover letter that would be sent:",
             "",
             package.cover_letter or "(cover letter not generated)",
         ]
     )
+    if package.resume_pdf_path:
+        lines.extend(
+            [
+                "",
+                "The tailored CV is attached to this email as resume.pdf.",
+            ]
+        )
+    if package.portfolio_links or package.github_links:
+        lines.extend(["", "Links that would be included:"])
+        for link in [*package.portfolio_links, *package.github_links]:
+            lines.append(f"- {link}")
     if package.screening_answers:
-        lines.extend(["", "If the form asks questions, you can use these answers:"])
+        lines.extend(["", "Answers that would be used if the form asks:"])
         for answer in package.screening_answers:
             lines.append(f"- {answer.question} {answer.answer}")
     return "\n".join(lines)
+
+
+def _resume_attachments(package: ApplicationPackage) -> list[tuple[str, bytes, str]]:
+    from jobpilot.storage import read_bytes
+
+    data = read_bytes(package.resume_pdf_path)
+    if not data:
+        return []
+    return [("resume.pdf", data, "application/pdf")]
 
 
 def render_weekly(report: WeeklyReport) -> str:
@@ -130,7 +168,7 @@ def render_weekly(report: WeeklyReport) -> str:
             "",
             "I will keep looking first in Uppsala, Stockholm, Gothenburg and Malmö, then the rest of Sweden, then other European countries.",
             "",
-            "If a role is sitting in your inbox, please open the link, attach the CV, paste the cover letter, and submit it on the company's site.",
+            "If a role is sitting in your inbox, open the review link, check the CV and cover letter, then either send it or submit it yourself on the company's site.",
         ]
     )
 
@@ -154,8 +192,8 @@ def render_repo_request(spec_title: str, repo: str, purpose: str, jobs: list[str
             f"3. Repository name: {repo}",
             "4. Make it public",
             "5. Create the repository",
-            "6. Clone it onto this machine",
             "",
-            "Once the repository exists, the rest of the work can continue.",
+            "Leave the repository empty. You do not need to clone it or add files yourself.",
+            "Once the empty repository exists on GitHub, the starter code will be added automatically.",
         ]
     )

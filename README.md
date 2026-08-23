@@ -59,29 +59,21 @@ jobpilot report          # weekly performance email
 
 ## Applying
 
-Live HTTP apply is **off** until you set:
+Live apply is on for official Greenhouse Job Board and Lever Postings APIs, **only after you approve**.
 
-```text
-JOBPILOT_ALLOW_LIVE_APPLY=true
-```
+Every draft is emailed first: tailored CV (`resume.pdf`), cover letter, screening answers, and a review link. Opening the link does not send anything. On that page you can:
 
-and `applications.dry_run: false` in `config/jobpilot.yaml`.
+- **Send this application** — submit through the official Greenhouse / Lever endpoint
+- **I'll submit it myself** — keep the draft and apply on the company site
 
-Even then JobPilot will **not**:
+JobPilot will **not**:
 
+- send an application without that approval
 - bypass CAPTCHA or bot detection
 - automate LinkedIn
 - steal cookies or rotate identities
 - reverse-engineer private ATS APIs
 - claim success without a confirmation id / page / ATS status
-
-If a human step is required you get:
-
-```text
-ACTION REQUIRED — [COMPANY] — [ROLE]
-```
-
-with the tailored CV, cover letter, and screening answers attached in the package.
 
 ## New repositories
 
@@ -91,7 +83,7 @@ Cursor cannot create GitHub repositories. If a streaming/Kafka (or other) projec
 ACTION REQUIRED — Create Repository: [PROJECT]
 ```
 
-and sets `PROJECT_STATUS = WAITING_FOR_REPOSITORY` until the repo appears.
+and sets `PROJECT_STATUS = WAITING_FOR_REPOSITORY` until the empty repo appears. Create it on GitHub (no README needed). A token with the `repo` scope (`jobpilot-github-token` / `GITHUB_TOKEN`) is required so the starter code can be pushed. Without that token the dashboard stays at **Repository found — starter code not pushed yet**.
 
 ## GCP (always-on)
 
@@ -104,7 +96,7 @@ export GCP_PROJECT=your-project-id
 ./scripts/gcp-deploy.sh
 ```
 
-That provisions Cloud Run (API + dashboard), Cloud SQL, Cloud Scheduler jobs, Secret Manager, and a GCS bucket for generated CVs. Redis/Celery are not used in GCP — Scheduler runs `jobpilot cycle` every six hours.
+That provisions Cloud Run (API + dashboard), Cloud SQL, Cloud Scheduler jobs, Secret Manager, and a GCS bucket for generated CVs. Redis/Celery are not used in GCP — Scheduler runs `jobpilot cycle` and `jobpilot-watch` every 15 minutes.
 
 ## Configuration
 

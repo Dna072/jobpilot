@@ -100,11 +100,23 @@ terraform -chdir=infra/gcp/terraform output
 # Ops token (protects POST /api/v1/ops/*)
 gcloud secrets versions access latest --secret=jobpilot-ops-token
 
-# Run a cycle now (does not wait for the 6-hour tick)
+# Run a cycle or repo watch now (does not wait for the 15-minute tick)
 gcloud run jobs execute jobpilot-cycle --region=europe-north1
+gcloud run jobs execute jobpilot-watch --region=europe-north1
 ```
 
-Live apply stays **off** (`JOBPILOT_ALLOW_LIVE_APPLY=false`).
+Live apply is **on**, but nothing is sent until you open the review email and choose **Send this application**. Greenhouse uses the official Job Board API. Lever stays manual unless `LEVER_API_KEY` is set.
+
+### Empty GitHub repo, no code
+
+The watch job can see a public repo without a token, but it cannot push files until Secret Manager `jobpilot-github-token` is a GitHub personal access token with the `repo` scope (not `unset`).
+
+```bash
+# after putting GITHUB_TOKEN=ghp_... in .env
+export GCP_PROJECT=skandix-app
+./scripts/gcp-secrets.sh
+gcloud run jobs execute jobpilot-watch --region=europe-north1
+```
 
 ## Manual Terraform
 

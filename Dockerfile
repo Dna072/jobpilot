@@ -7,7 +7,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 PYTHONPATH=/app/src
 # match cv/source/*.pdf. The binary is ~20MB vs a full TeX Live image.
 ARG TECTONIC_VERSION=0.15.0
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl ca-certificates libfontconfig1 \
+    curl ca-certificates libfontconfig1 git \
     && curl -fsSL "https://github.com/tectonic-typesetting/tectonic/releases/download/tectonic%40${TECTONIC_VERSION}/tectonic-${TECTONIC_VERSION}-x86_64-unknown-linux-gnu.tar.gz" \
       | tar -xz -C /usr/local/bin \
     && chmod +x /usr/local/bin/tectonic \

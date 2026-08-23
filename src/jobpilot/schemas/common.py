@@ -104,14 +104,20 @@ ALLOWED_TRANSITIONS: dict[ApplicationStatus, set[ApplicationStatus]] = {
         ApplicationStatus.REJECTED,
     },
     ApplicationStatus.WAITING_FOR_REPOSITORY: {
+        ApplicationStatus.ANALYZED,
         ApplicationStatus.PROJECT_BUILDING,
+        ApplicationStatus.PROJECT_COMPLETE,
+        ApplicationStatus.CV_GENERATED,
         ApplicationStatus.REJECTED,
     },
     ApplicationStatus.PROJECT_BUILDING: {
         ApplicationStatus.PROJECT_COMPLETE,
         ApplicationStatus.FAILED,
     },
-    ApplicationStatus.PROJECT_COMPLETE: {ApplicationStatus.CV_GENERATED},
+    ApplicationStatus.PROJECT_COMPLETE: {
+        ApplicationStatus.ANALYZED,
+        ApplicationStatus.CV_GENERATED,
+    },
     ApplicationStatus.CV_GENERATED: {ApplicationStatus.READY_TO_APPLY},
     ApplicationStatus.READY_TO_APPLY: {
         ApplicationStatus.APPLICATION_IN_PROGRESS,

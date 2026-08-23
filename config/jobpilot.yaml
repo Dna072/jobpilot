@@ -91,10 +91,10 @@ match:
 
 applications:
   maximum_daily_applications: 8
-  dry_run: true
+  dry_run: false
   allow_browser_automation: false
-  allow_greenhouse_http: false
-  allow_lever_http: false
+  allow_greenhouse_http: true
+  allow_lever_http: true
   linkedin_automation: false
 
 project_strategy:

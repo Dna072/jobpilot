@@ -2,7 +2,7 @@ locals {
   run_env = [
     { name = "JOBPILOT_ENV", value = "production" },
     { name = "JOBPILOT_CONFIG", value = "config/jobpilot.yaml" },
-    { name = "JOBPILOT_ALLOW_LIVE_APPLY", value = "false" },
+    { name = "JOBPILOT_ALLOW_LIVE_APPLY", value = "true" },
     { name = "LLM_PROVIDER", value = "heuristic" },
     { name = "GCS_BUCKET", value = google_storage_bucket.artifacts.name },
     { name = "GCS_PREFIX", value = "jobpilot" },
@@ -139,6 +139,7 @@ resource "google_cloud_run_v2_job" "cycle" {
   depends_on = [
     google_secret_manager_secret_version.database_url,
     google_artifact_registry_repository.jobpilot,
+    google_cloud_run_v2_service.api,
   ]
 
   template {
@@ -182,6 +183,10 @@ resource "google_cloud_run_v2_job" "cycle" {
             }
           }
         }
+        env {
+          name  = "PUBLIC_BASE_URL"
+          value = google_cloud_run_v2_service.api.uri
+        }
       }
     }
   }
@@ -193,6 +198,7 @@ resource "google_cloud_run_v2_job" "watch" {
   depends_on = [
     google_secret_manager_secret_version.database_url,
     google_artifact_registry_repository.jobpilot,
+    google_cloud_run_v2_service.api,
   ]
 
   template {
@@ -236,6 +242,10 @@ resource "google_cloud_run_v2_job" "watch" {
             }
           }
         }
+        env {
+          name  = "PUBLIC_BASE_URL"
+          value = google_cloud_run_v2_service.api.uri
+        }
       }
     }
   }
@@ -247,6 +257,7 @@ resource "google_cloud_run_v2_job" "report" {
   depends_on = [
     google_secret_manager_secret_version.database_url,
     google_artifact_registry_repository.jobpilot,
+    google_cloud_run_v2_service.api,
   ]
 
   template {
@@ -289,6 +300,10 @@ resource "google_cloud_run_v2_job" "report" {
               }
             }
           }
+        }
+        env {
+          name  = "PUBLIC_BASE_URL"
+          value = google_cloud_run_v2_service.api.uri
         }
       }
     }

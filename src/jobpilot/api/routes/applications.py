@@ -2,9 +2,10 @@ from __future__ import annotations
 
 from datetime import UTC, datetime
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel
 
+from jobpilot.config import public_base_url
 from jobpilot.db.models import Application, ApplicationMaterial, get_session
 from jobpilot.schemas.common import (
     ApplicationStatus,
@@ -22,8 +23,19 @@ class HumanCompleteBody(BaseModel):
     reason: str | None = None
 
 
+def _preview_link(token: str | None, request: Request | None = None) -> str | None:
+    if not token:
+        return None
+    base = public_base_url()
+    if not base and request is not None:
+        base = str(request.base_url).rstrip("/")
+    if not base:
+        return None
+    return f"{base}/apply/{token}"
+
+
 @router.get("/applications")
-def list_applications(status: str | None = None, limit: int = 50) -> list[dict]:
+def list_applications(request: Request, status: str | None = None, limit: int = 50) -> list[dict]:
     session = get_session()
     try:
         q = session.query(Application)
@@ -40,6 +52,7 @@ def list_applications(status: str | None = None, limit: int = 50) -> list[dict]:
                 "selected_resume_type": a.selected_resume_type,
                 "human_action": a.human_action,
                 "confirmation_id": a.confirmation_id,
+                "preview_url": _preview_link(a.approval_token, request),
             }
             for a in rows
         ]
@@ -48,7 +61,7 @@ def list_applications(status: str | None = None, limit: int = 50) -> list[dict]:
 
 
 @router.get("/applications/{application_id}")
-def get_application(application_id: str) -> dict:
+def get_application(application_id: str, request: Request) -> dict:
     session = get_session()
     try:
         app = session.get(Application, application_id)
@@ -61,6 +74,7 @@ def get_application(application_id: str) -> dict:
             "match_score": app.match_score,
             "match_report": app.match_report,
             "human_action": app.human_action,
+            "preview_url": _preview_link(app.approval_token, request),
             "materials": [m.package for m in materials],
         }
     finally:

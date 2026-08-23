@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import secrets
 import time
 from datetime import UTC, datetime
 
@@ -8,7 +9,7 @@ from jobpilot.agents.cv import generate_package
 from jobpilot.agents.planner import plan_from_gap
 from jobpilot.analyst import analyze_job
 from jobpilot.apply.submit import attempt_application
-from jobpilot.config import load_app_config
+from jobpilot.config import load_app_config, public_base_url
 from jobpilot.db.models import (
     AgentRun,
     Application,
@@ -241,9 +242,15 @@ def process_job(job_id: str) -> dict:
         gap = analyze_gaps(analysis)
         if gap.verdict.value == "NEW_PROJECT":
             spec = plan_from_gap(gap)
-            app.status = ApplicationStatus.PROJECT_REQUIRED.value
-            if spec:
-                existing = session.query(ProjectRepository).filter_by(requested_name=spec.repository_name).first()
+            existing = (
+                session.query(ProjectRepository).filter_by(requested_name=spec.repository_name).first()
+                if spec
+                else None
+            )
+            project_ready = bool(existing and existing.status == ProjectStatus.PROJECT_COMPLETE.value)
+            if spec and not project_ready:
+                if ApplicationStatus(app.status) == ApplicationStatus.MATCHED:
+                    app.status = ApplicationStatus.PROJECT_REQUIRED.value
                 if not existing:
                     session.add(
                         ProjectRepository(
@@ -269,12 +276,28 @@ def process_job(job_id: str) -> dict:
                             sent=bool(result.get("sent")),
                         )
                     )
-                app.status = ApplicationStatus.WAITING_FOR_REPOSITORY.value
-            session.commit()
-            return {"status": app.status, "gap": gap.verdict.value}
+                if ApplicationStatus(app.status) in {
+                    ApplicationStatus.PROJECT_REQUIRED,
+                    ApplicationStatus.MATCHED,
+                }:
+                    app.status = ApplicationStatus.WAITING_FOR_REPOSITORY.value
+                session.commit()
+                return {"status": app.status, "gap": gap.verdict.value}
+            if project_ready and ApplicationStatus(app.status) == ApplicationStatus.WAITING_FOR_REPOSITORY:
+                app.status = ApplicationStatus.PROJECT_COMPLETE.value
 
         package = generate_package(analysis, match)
+        token = secrets.token_urlsafe(24)
+        package.approval_token = token
+        base = public_base_url()
+        if base:
+            package.preview_url = f"{base}/apply/{token}"
+        app.approval_token = token
         app.selected_resume_type = package.selected_resume.value
+        if ApplicationStatus(app.status) == ApplicationStatus.PROJECT_COMPLETE:
+            assert_transition(ApplicationStatus.PROJECT_COMPLETE, ApplicationStatus.CV_GENERATED)
+        elif ApplicationStatus(app.status) == ApplicationStatus.WAITING_FOR_REPOSITORY:
+            assert_transition(ApplicationStatus.WAITING_FOR_REPOSITORY, ApplicationStatus.CV_GENERATED)
         app.status = ApplicationStatus.CV_GENERATED.value
         app.status = ApplicationStatus.READY_TO_APPLY.value
         session.add(
@@ -327,7 +350,7 @@ def process_job(job_id: str) -> dict:
                 session.add(
                     Notification(
                         kind="human_action",
-                        subject=f"Please apply to {package.role} at {package.company}",
+                        subject=f"Please review the application to {package.role} at {package.company}",
                         body=result.get("body") or attempt.human_action or "",
                         sent=bool(result.get("sent")),
                     )

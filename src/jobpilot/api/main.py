@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from jobpilot import __version__
-from jobpilot.api.routes import applications, jobs, ops, projects, reports, status
+from jobpilot.api.routes import applications, approve, jobs, ops, projects, reports, status
 from jobpilot.db.models import init_db
 
 app = FastAPI(title="JobPilot", version=__version__, description="Career-engineering control plane")
@@ -20,6 +20,7 @@ app.include_router(applications.router, prefix="/api/v1")
 app.include_router(projects.router, prefix="/api/v1")
 app.include_router(reports.router, prefix="/api/v1")
 app.include_router(ops.router, prefix="/api/v1")
+app.include_router(approve.router)
 
 
 @app.on_event("startup")

@@ -32,11 +32,13 @@ def test_human_action_email_is_plain_english():
         selected_resume=ResumeType.DATA_ENGINEER,
         cover_letter="Dear Hiring Team,\n\nI am writing to apply.\n",
         remaining_human_action="Open the job link, attach the CV, paste the cover letter, and submit the form.",
+        preview_url="https://example.com/apply/review-token",
     )
     body = render_application_email(package)
     assert "Klarna" in body
     assert "Data Engineer" in body
     assert "https://example.com/job" in body
+    assert "https://example.com/apply/review-token" in body
     assert "Dear Hiring Team" in body
     assert "88" not in body
     assert "DATA_ENGINEER" not in body
