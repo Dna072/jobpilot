@@ -38,22 +38,89 @@ def select_projects_for_resume(resume_type: ResumeType, analysis: JobAnalysis) -
     return names
 
 
+def display_company_name(name: str) -> str:
+    raw = (name or "").strip()
+    if not raw:
+        return "your team"
+    if re.fullmatch(r"[a-z0-9]+(?:[-_][a-z0-9]+)+", raw):
+        return raw.replace("-", " ").replace("_", " ").title()
+    return raw
+
+
+def _location_clause(analysis: JobAnalysis) -> str:
+    place = analysis.city or analysis.location or analysis.country or ""
+    place = place.strip()
+    if not place:
+        return "I live in Stockholm and I am looking for roles in Sweden and across Europe."
+    if re.search(r"sweden|stockholm|uppsala|gothenburg|göteborg|malm", place, re.I):
+        return f"I live in Stockholm and this {place} role is a natural fit for where I want to work."
+    return (
+        f"I live in Stockholm and I am open to strong European roles, including this one in {place}."
+    )
+
+
+def _experience_paragraph(resume_type: ResumeType) -> str:
+    if resume_type == ResumeType.DATA_ENGINEER:
+        return (
+            "At the National Teaching Council I designed and ran production data pipelines, "
+            "moving data from PostgreSQL into Amazon Redshift with quality checks for a platform "
+            "used by hundreds of thousands of people. At KPMG Sweden I build internal automation "
+            "and reporting so teams can work from reliable data."
+        )
+    if resume_type == ResumeType.FRONTEND_ENGINEER:
+        return (
+            "I have shipped production web interfaces alongside backend services, including "
+            "Teacher Portal Ghana and product work such as MedLink and Arctiq using TypeScript, "
+            "React, and Next.js. At KPMG Sweden I deliver internal apps and dashboards that "
+            "people actually use."
+        )
+    return (
+        "At the National Teaching Council I built and ran backend services with Node.js and "
+        "PostgreSQL for a nationwide platform, and I led the backend architecture for Teacher "
+        "Portal Ghana. At KPMG Sweden I maintain and automate internal systems, including "
+        "SQL-backed reporting and monitoring."
+    )
+
+
+def _fit_paragraph(analysis: JobAnalysis, match: MatchReport, company: str) -> str:
+    skills = [s for s in match.strong_matches if s and "←" not in s][:4]
+    title = (analysis.title or "this role").lower()
+    if skills:
+        listed = ", ".join(skills[:-1]) + (f" and {skills[-1]}" if len(skills) > 1 else skills[0])
+        return (
+            f"The posting asks for {listed}. That matches the work I have already done in "
+            f"production, and I would like to bring the same focus on reliability and clear "
+            f"design to {company}."
+        )
+    if any(word in title for word in ("robot", "hardware", "firmware", "embedded")):
+        return (
+            f"I am a software engineer with a production backend and data-platform background. "
+            f"I am interested in this role because it needs careful, reliable software, which is "
+            f"the work I have been doing."
+        )
+    return (
+        f"I am interested in this role at {company} because it is close to the systems work I "
+        f"already do, and I would welcome the chance to contribute from day one."
+    )
+
+
 def cover_letter(analysis: JobAnalysis, match: MatchReport, resume_type: ResumeType) -> str:
+    """Company-facing letter. Never mention JobPilot, scores, or internal process."""
     profile = load_candidate_profile()
     name = profile["full_name"]
-    evidence = match.portfolio_evidence[:3] or match.transferable_experience[:3]
+    company = display_company_name(analysis.company)
+    title = analysis.title or "this role"
     return (
         f"Dear Hiring Team,\n\n"
-        f"I am {name}, a Stockholm-based engineer applying for {analysis.title} at {analysis.company}. "
-        f"My professional work includes production data systems at the National Teaching Council "
-        f"(PostgreSQL, AWS Glue, Redshift) and process-automation platforms at KPMG Sweden. "
-        f"I am not treating portfolio repositories as employment.\n\n"
-        f"This role looks like a {match.score:.0f}% match on JobPilot's transparent rubric. "
-        f"Relevant evidence: {'; '.join(evidence) or 'see attached CV'}. "
-        f"I am presenting my {resume_type.value.replace('_', ' ').title()} resume because it best "
-        f"reflects the responsibilities and technology mix in the posting.\n\n"
-        f"I would welcome the chance to discuss how I can contribute.\n\n"
-        f"Sincerely,\n{name}\n{profile['email']}\n{profile['phone']}\n"
+        f"I am writing to apply for the {title} position at {company}. "
+        f"{_location_clause(analysis)}\n\n"
+        f"{_experience_paragraph(resume_type)}\n\n"
+        f"{_fit_paragraph(analysis, match, company)}\n\n"
+        f"I would be glad to discuss how I can help.\n\n"
+        f"Sincerely,\n"
+        f"{name}\n"
+        f"{profile['email']}\n"
+        f"{profile['phone']}\n"
     )
 
 
@@ -62,15 +129,15 @@ def screening_answers(analysis: JobAnalysis) -> list[dict]:
     answers = [
         {
             "question": "Are you located in / willing to work in Europe?",
-            "answer": "I live in Stockholm, Sweden, and I am targeting European (especially Swedish) roles, including remote/hybrid Europe.",
+            "answer": "I live in Stockholm, Sweden, and I am open to roles in Sweden and elsewhere in Europe, including hybrid and remote.",
             "invented": False,
         },
         {
             "question": "Years of professional experience?",
             "answer": (
-                "I do not invent a single year count. Documented professional roles: "
-                "KPMG Sweden (2023–Present) and National Teaching Council (documented as "
-                "Software Engineer 2018–2023 on LinkedIn and Data Engineer contract 2022–2025 on my data CV)."
+                "I have been a System Specialist at KPMG Sweden since 2023. Before that I worked "
+                "at the National Teaching Council in Ghana as a software engineer and later as a "
+                "data engineer (2018–2025). I am happy to walk through the timeline in an interview."
             ),
             "invented": False,
         },
@@ -79,7 +146,7 @@ def screening_answers(analysis: JobAnalysis) -> list[dict]:
         answers.append(
             {
                 "question": "Work authorization",
-                "answer": "I am based in Sweden. I will not invent visa details; I can confirm status directly if asked.",
+                "answer": "I am based in Sweden and can confirm work-authorization details if you would like.",
                 "invented": False,
             }
         )

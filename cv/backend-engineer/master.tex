@@ -1,62 +1,280 @@
 % Backend Engineer master resume — Derrick Adjei
+% Official source look: cv/source/Derrick_Adjei_Backend_Engineer.pdf
 % Do not overwrite this file during tailoring. Copy into cv/generated/.
-\documentclass[10pt,a4paper]{article}
-\usepackage[margin=1.4cm]{geometry}
-\usepackage[T1]{fontenc}
-\usepackage{lmodern}
-\usepackage[hidelinks]{hyperref}
+% Template: Leslie Cheng (MIT) — Fira Sans, navy section bars.
+%-------------------------------------
+% LaTeX Resume for Software Engineers
+% Author : Leslie Cheng
+% License : MIT
+%-------------------------------------
+
+\documentclass[a4paper,12pt]{article}[leftmargin=*]
+\usepackage[empty]{fullpage}
 \usepackage{enumitem}
-\usepackage{titlesec}
-\pagestyle{empty}
-\setlength{\parindent}{0pt}
-\setlist[itemize]{leftmargin=1.1em,itemsep=2pt,topsep=2pt,parsep=0pt}
-\titleformat{\section}{\large\bfseries\uppercase}{}{0pt}{}[\titlerule]
-\titlespacing*{\section}{0pt}{8pt}{4pt}
+\usepackage{ifxetex}
+\ifxetex
+  \usepackage{fontspec}
+  \usepackage[xetex]{hyperref}
+\else
+  \usepackage[utf8]{inputenc}
+  \usepackage[T1]{fontenc}
+  \usepackage[pdftex]{hyperref}
+\fi
+\usepackage{fontawesome}
+\usepackage[sfdefault,light]{FiraSans}
+\usepackage{anyfontsize}
+\usepackage{xcolor}
+\usepackage{tabularx}
+
+%-------------------------- SETTINGS HERE --------------------------
+% Header settings
+\def \fullname {Derrick Adjei}
+\def \subtitle {Backend Engineer}
+
+\def \linkedinicon {\faLinkedin}
+\def \linkedinlink {https://www.linkedin.com/in/derrick-adjei-5421289a/}
+\def \linkedintext {/derrick-adjei}
+
+\def \phoneicon {\faPhone}
+\def \phonetext {+46-76-251-7998}
+\def \emailicon {\faEnvelope}
+\def \emaillink {mailto:derrick.adjei.eng@gmail.com}
+\def \emailtext {derrick.adjei.eng@gmail.com}
+\def \githubicon {\faGithub}
+\def \githublink {https://github.com/Dna072/}
+\def \githubtext {Github}
+
+\def \websiteicon {\faGlobe}
+\def \websitelink {https://dna072.github.io/}
+\def \websitetext {dna072.github.io}
+
+\def \headertype {\doublecol} % \singlecol or \doublecol
+
+% Misc settings
+\def \entryspacing {-0pt}
+
+\def \bulletstyle {\faAngleRight}
+
+% Define colours
+\definecolor{primary}{HTML}{000000}
+\definecolor{secondary}{HTML}{0D47A1}
+\definecolor{accent}{HTML}{263238}
+\definecolor{links}{HTML}{1565C0}
+
+%------------------------------------------------------------
+
+% Defines to make listing easier
+\def \linkedin {\linkedinicon \hspace{3pt}\href{\linkedinlink}{\linkedintext}}
+\def \phone {\phoneicon \hspace{3pt}{ \phonetext}}
+\def \email {\emailicon \hspace{3pt}\href{\emaillink}{\emailtext}}
+\def \github {\githubicon \hspace{3pt}\href{\githublink}{\githubtext}}
+\def \website {\websiteicon \hspace{3pt}\href{\websitelink}{\websitetext}}
+
+% Adjust margins
+\addtolength{\oddsidemargin}{-0.55in}
+\addtolength{\evensidemargin}{-0.55in}
+\addtolength{\textwidth}{1.1in}
+\addtolength{\topmargin}{-0.7in}
+\addtolength{\textheight}{1.1in}
+
+% Define the link colours
+\hypersetup{
+    colorlinks=true,
+    urlcolor=links,
+}
+
+% Set the margin alignment
+\raggedbottom
+\raggedright
+\setlength{\tabcolsep}{0in}
+
+%-------------------------
+% Custom commands
+
+% Sections
+\renewcommand{\section}[2]{\vspace{5pt}
+  \colorbox{secondary}{\color{white}\raggedbottom\normalsize\textbf{{#1}{\hspace{7pt}#2}}}
+}
+
+% Entry start and end, for spacing
+\newcommand{\resumeEntryStart}{\begin{itemize}[leftmargin=2.5mm]}
+\newcommand{\resumeEntryEnd}{\end{itemize}\vspace{\entryspacing}}
+
+% Itemized list for the bullet points under an entry, if necessary
+\newcommand{\resumeItemListStart}{\begin{itemize}[leftmargin=4.5mm]}
+\newcommand{\resumeItemListEnd}{\end{itemize}}
+
+% Resume item
+\renewcommand{\labelitemii}{\bulletstyle}
+\newcommand{\resumeItem}[1]{
+  \item\small{
+    {#1 \vspace{-2pt}}
+  }
+}
+
+% Entry with title, subheading, date(s), and location
+\newcommand{\resumeEntryTSDL}[4]{
+  \vspace{-1pt}\item[]
+    \begin{tabularx}{0.99\textwidth}{X@{\hspace{60pt}}r}
+      \textbf{\color{primary}#1} & {\firabook\color{accent}\small#2} \\
+      \textit{\color{accent}\small#3} & \textit{\color{accent}\small#4} \\
+    \end{tabularx}\vspace{-7pt}
+}
+
+% Entry with title and date(s)
+\newcommand{\resumeEntryTD}[2]{
+  \vspace{-1pt}\item[]
+    \begin{tabularx}{0.97\textwidth}{X@{\hspace{60pt}}r}
+      \textbf{\color{primary}#1} & {\firabook\color{accent}\small#2} \\
+    \end{tabularx}\vspace{-6pt}
+}
+
+% Entry for special (skills)
+\newcommand{\resumeEntryS}[2]{
+  \item[]\small{
+    \textbf{\color{primary}#1 }{ #2 \vspace{-6pt}}
+  }
+}
+
+% Double column header
+\newcommand{\doublecol}[6]{
+  \begin{tabularx}{\textwidth}{Xr}
+    {
+      \begin{tabular}[c]{l}
+        \fontsize{35}{45}\selectfont{\color{primary}{{\textbf{\fullname}}}} \\
+        {\textit{\subtitle}} % You could add a subtitle here
+      \end{tabular}
+    } & {
+      \begin{tabular}[c]{l@{\hspace{1.5em}}l}
+        {\small#4} & {\small#1} \\
+        {\small#5} & {\small#2} \\
+        {\small#6} & {\small#3}
+      \end{tabular}
+    }
+  \end{tabularx}
+}
+
+% Single column header
+\newcommand{\singlecol}[6]{
+  \begin{tabularx}{\textwidth}{Xr}
+    {
+      \begin{tabular}[b]{l}
+        \fontsize{35}{45}\selectfont{\color{primary}{{\textbf{\fullname}}}} \\
+        {\textit{\subtitle}} % You could add a subtitle here
+      \end{tabular}
+    } & {
+      \begin{tabular}[c]{l}
+        {\small#1} \\
+        {\small#2} \\
+        {\small#3} \\
+        {\small#4} \\
+        {\small#5} \\
+        {\small#6}
+      \end{tabular}
+    }
+  \end{tabularx}
+}
 
 \begin{document}
-\begin{center}
-{\LARGE\bfseries Derrick Adjei}\\[2pt]
-{\large Backend / Software Engineer}\\[4pt]
-Stockholm, Sweden \textbullet{} +46-76-251-7998 \textbullet{}
-\href{mailto:derrick.adjei.eng@gmail.com}{derrick.adjei.eng@gmail.com}\\
-\href{https://github.com/Dna072}{github.com/Dna072} \textbullet{}
-\href{https://dna072.github.io}{dna072.github.io} \textbullet{}
-\href{https://www.linkedin.com/in/derrick-adjei-5421289a/}{LinkedIn}
-\end{center}
+%-------------------------- BEGIN HERE --------------------------
 
-\section{Experience}
-\textbf{KPMG Sweden} \hfill 2023 -- Present\\
-\textit{System Specialist -- Data \& Process Automation} \hfill Stockholm, Sweden
-\begin{itemize}
-  \item Build internal automation platforms and operational dashboards with Power Platform and Power BI.
-  \item Work with stakeholders to turn manual processes into reliable digital workflows.
-\end{itemize}
+%-------------------------- HEADER ------------------------------
 
-\textbf{National Teaching Council} \hfill 2018 -- 2025\\
-\textit{Software Engineer / Lead IT Officer; Data Engineer (Contract)} \hfill Greater Accra, Ghana
-\begin{itemize}
-  \item Software engineering and IT leadership for nationwide teacher-regulation systems (title/dates as documented on LinkedIn and the candidate brief; data-engineering contract 2022--2025 as on the data CV).
-  \item Production web platform: Teacher Portal Ghana (\href{https://tpg.ntc.gov.gh}{tpg.ntc.gov.gh}) --- JavaScript, Node.js, Python, PostgreSQL.
-  \item APIs, authentication/IAM, dashboards, Docker, CI/CD, and high-availability operations for licensing and digital-certificate workflows.
-  \item Production ETL with AWS Glue from PostgreSQL into Amazon Redshift, including data-quality checks for 500{,}000+ users.
-\end{itemize}
+\headertype{\linkedin}{\github}{\website}{\phone}{\email}{} % Set the order of items here
+\vspace{-5pt} % Set a negative value to push the body up, and the opposite
 
-\section{Selected systems}
-\textit{Live products vs portfolio are labelled. Portfolio is not employment.}
-\begin{itemize}
-  \item \textbf{TPG} --- production government platform (professional).
-  \item \textbf{MediaVault} --- FastAPI, PostgreSQL FTS, RBAC, signed URLs. \href{https://github.com/Dna072/mediavault}{github.com/Dna072/mediavault}
-  \item \textbf{RenderFlow} --- job queue, workers, heartbeats, Docker Compose, Kubernetes manifests. \href{https://github.com/Dna072/renderflow}{github.com/Dna072/renderflow}
-  \item \textbf{ClipForge} --- async Redis workers, FastAPI, pluggable AI provider. \href{https://github.com/Dna072/clipforge}{github.com/Dna072/clipforge}
-\end{itemize}
+%-------------------------- EXPERIENCE --------------------------
+\vspace{5pt}
+\section{\faPieChart}{Experience}
+  \resumeEntryStart
+  \vspace{-10pt}
+    \resumeEntryTSDL
+      {\href{https://kpmg.se/}{KPMG Sweden} - Data Automation (System Specialist)}{2023 -- Present}
+      {KPMG is a leading provider of professional services in Sweden}{Stockholm, Sweden}
+    \resumeItemListStart
+      \resumeItem {Maintained and optimized enterprise risk and compliance systems}
+      \resumeItem {Built internal automation tools to improve operational efficiency}
+      \resumeItem {Optimized SQL queries and reporting systems, increasing performance and data accessibility}
+      \resumeItem {Automated monitoring and alerting systems for real-time insights}
+    \resumeItemListEnd
+  \resumeEntryEnd
 
-\section{Skills}
-\textbf{Languages:} Python, JavaScript, TypeScript, SQL, Java\\
-\textbf{Backend:} FastAPI, Node.js, Express, REST APIs, PostgreSQL, Redis, MongoDB\\
-\textbf{Platform:} Docker, Kubernetes, CI/CD, AWS (S3, Glue, Redshift), IAM\\
-\textbf{Note:} Kafka is a target skill, not claimed as production employment.
+  \resumeEntryStart
+    \vspace{-7pt}
+    \resumeEntryTSDL
+      {\href{https://ntc.gov.gh/}{National Teaching Council} - Backend Engineer (Contract)}{2022 -- 2025}
+      {National Teaching Council is a government agency established to regulate the teaching profession in Ghana.}{Greater Accra, Ghana}
+    \resumeItemListStart
+      \resumeItem {Built scalable backend services using \textbf{Node.js} and \textbf{PostgreSQL} for a platform serving 500,000+ users}
+      \resumeItem {Optimized database queries and indexing, improving performance by \textbf{50\%}}
+      \resumeItem {Reduced API latency for high traffic endpoints through efficient query design}
+      \resumeItem {Designed CI/CD pipelines, reducing deployment time by \textbf{30\%}}
+    \resumeItemListEnd
+  \resumeEntryEnd
 
-\section{Education}
-\textbf{MSc Data Science}, Uppsala University \hfill 2022 -- 2024\\
-\textbf{BSc Computer Engineering}, University of Ghana \hfill 2013 -- 2017
+  \resumeEntryStart
+    \vspace{-7pt}
+    \resumeEntryTSDL
+      {\href{https://ntc.gov.gh/}{National Teaching Council} - Lead IT Officer/Backend Developer}{2018 -- 2022}
+      {}{Greater Accra, Ghana}
+    \resumeItemListStart
+      \resumeItem {Led backend architecture for {\href{https://tpg.ntc.gov.gh}{Teacher Portal Ghana}}, ensuring scalability and high availability}
+      \resumeItem {Designed AWS-based cloud infrastructure for production systems}
+      \resumeItem {Conducted performance profiling and stress testing under peak load conditions}
+    \resumeItemListEnd
+  \resumeEntryEnd
+
+%-------------------------- PROGRAMMING SKILLS --------------------------
+\section{\faGears} {Backend Skills}
+ \resumeEntryStart
+  \resumeEntryS
+    {Understanding of:}
+    {API Design, System Design, Performance Optimization, Distributed Systems, Functional Programming, OOP, Unit and Functional Testing, Debugging, Teamwork, Problem solving}
+
+  \resumeEntryS
+    {Experience with:}
+    {\color{black} Node.js, Express, Javascript, Python, Typescript, SQL, NoSQL, PostgreSQL, MongoDB, Elasticsearch, Redis, REST,  Docker, CI/CD, Scrum, Kanban}
+ \resumeEntryEnd
+
+
+%-------------------------- Open Source --------------------------
+% \vspace{2pt}
+% \section{\faGears} {Projects}
+%  \resumeEntryStart
+%   \resumeEntryS
+%     {}
+%     {
+%         {\href{https://github.com/Dna072/stedi-human-balance-analytics}{STEDI Data Lakehouse}} - {Built AWS lakehouse (S3, Glue, Athena, Spark) for ML-ready data processing}
+%     }
+%   \resumeEntryS
+%   {}
+%    {
+%         {\href{https://github.com/Dna072/airflow-pipelines}{Airflow Pipelines}} - {Designed dynamic pipelines with orchestration and data quality checks}
+%     }
+%    \resumeEntryS
+%     {}
+%       {
+%         {\href{https://github.com/Dna072/sparkify_dwh_aws_redshift}{Redshift Warehouse}} - {Built optimized star schema warehouse from raw JSON datasets}
+%     }
+%  \resumeEntryEnd
+
+
+%-------------------------- EDUCATION --------------------------
+\vspace{2pt}
+\section{\faGraduationCap}{Education}
+  \resumeEntryStart
+    \vspace{-10pt}
+    \resumeEntryTSDL
+      {Uppsala University}{2022 -- 2024}
+      {MSc Data Science}
+      {Uppsala, Sweden}
+  \resumeEntryEnd
+  \resumeEntryStart
+    \vspace{-10pt}
+    \resumeEntryTSDL
+      {University of Ghana}{2013 -- 2017}
+      {BSc Computer Engineering}
+      {Accra, Ghana}
+  \resumeEntryEnd
+
 \end{document}

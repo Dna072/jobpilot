@@ -9,6 +9,7 @@ type AppRow = {
   recommendation: string | null;
   selected_resume_type: string | null;
   human_action: string | null;
+  preview_url: string | null;
 };
 
 export default async function ApplicationsPage() {
@@ -22,8 +23,9 @@ export default async function ApplicationsPage() {
     <div>
       <h1>Applications</h1>
       <p className="lede">
-        SUBMITTED appears only with confirmation evidence. HUMAN_ACTION_REQUIRED means a
-        legitimate human-only step (CAPTCHA, login, LinkedIn, ToS).
+        Nothing is sent to a company until you open the review email and choose Send this
+        application or submit it yourself. SUBMITTED only appears with confirmation from
+        the company site.
       </p>
       <table className="table">
         <thead>
@@ -32,6 +34,7 @@ export default async function ApplicationsPage() {
             <th>Score</th>
             <th>Resume</th>
             <th>Recommendation</th>
+            <th>Review</th>
             <th>Human action</th>
           </tr>
         </thead>
@@ -46,6 +49,7 @@ export default async function ApplicationsPage() {
               <td>{row.match_score ?? "—"}</td>
               <td>{row.selected_resume_type ?? "—"}</td>
               <td>{row.recommendation ?? "—"}</td>
+              <td>{row.preview_url ? <a href={row.preview_url}>Review draft</a> : "—"}</td>
               <td>{row.human_action ?? "—"}</td>
             </tr>
           ))}

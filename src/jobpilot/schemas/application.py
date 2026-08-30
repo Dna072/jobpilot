@@ -28,6 +28,8 @@ class ApplicationPackage(BaseModel):
     portfolio_links: list[str] = Field(default_factory=list)
     github_links: list[str] = Field(default_factory=list)
     remaining_human_action: str | None = None
+    approval_token: str | None = None
+    preview_url: str | None = None
 
 
 class ApplicationAttempt(BaseModel):

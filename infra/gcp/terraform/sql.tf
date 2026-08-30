@@ -15,6 +15,8 @@ resource "google_sql_database_instance" "jobpilot" {
   depends_on       = [google_project_service.services]
 
   settings {
+    # POSTGRES_16+ defaults to ENTERPRISE_PLUS, which rejects shared-core tiers.
+    edition           = "ENTERPRISE"
     tier              = var.db_tier
     availability_type = "ZONAL"
     disk_size         = 10

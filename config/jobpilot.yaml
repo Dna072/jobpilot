@@ -47,28 +47,30 @@ target_countries:
   - Belgium
 
 priority_countries:
-  Sweden: 1.0
-  Denmark: 0.9
-  Norway: 0.9
-  Finland: 0.85
-  Germany: 0.8
-  Netherlands: 0.8
-  Switzerland: 0.75
-  Ireland: 0.75
-  Belgium: 0.7
+  Sweden: 0.86
+  Denmark: 0.78
+  Norway: 0.78
+  Finland: 0.76
+  Germany: 0.62
+  Netherlands: 0.62
+  Switzerland: 0.6
+  Ireland: 0.6
+  Belgium: 0.58
 
 priority_cities:
+  Uppsala: 1.0
   Stockholm: 1.0
-  Gothenburg: 0.95
-  Malmö: 0.95
-  Uppsala: 0.9
-  Copenhagen: 0.9
-  Oslo: 0.9
-  Helsinki: 0.85
-  Berlin: 0.8
-  Amsterdam: 0.8
-  Zurich: 0.75
-  Dublin: 0.75
+  Gothenburg: 1.0
+  Göteborg: 1.0
+  Malmö: 1.0
+  Malmo: 1.0
+  Copenhagen: 0.78
+  Oslo: 0.78
+  Helsinki: 0.76
+  Berlin: 0.62
+  Amsterdam: 0.62
+  Zurich: 0.6
+  Dublin: 0.6
 
 remote_europe: true
 hybrid_europe: true
@@ -76,23 +78,23 @@ relocation: true
 
 match:
   weights:
-    technical_skills: 0.30
-    relevant_experience: 0.25
+    technical_skills: 0.28
+    relevant_experience: 0.24
     portfolio_evidence: 0.15
     seniority: 0.10
     education: 0.05
-    location: 0.05
-    industry: 0.05
-    other: 0.05
+    location: 0.12
+    industry: 0.03
+    other: 0.03
   minimum_match_score: 75
   ideal_match_score: 85
 
 applications:
   maximum_daily_applications: 8
-  dry_run: true
+  dry_run: false
   allow_browser_automation: false
-  allow_greenhouse_http: false
-  allow_lever_http: false
+  allow_greenhouse_http: true
+  allow_lever_http: true
   linkedin_automation: false
 
 project_strategy:
@@ -107,8 +109,22 @@ project_strategy:
     - Another Redshift Star Schema
 
 scout:
-  max_jobs_per_source: 80
+  max_jobs_per_source: 100
+  # LinkedIn and Indeed have no public job-search API. Scraping them is forbidden.
+  # Swedish Platsbanken (JobTech) and ATS boards cover most of the same ads.
   sources:
+    jobtech:
+      enabled: true
+      queries:
+        - data engineer
+        - analytics engineer
+        - backend engineer
+        - backend developer
+        - frontend engineer
+        - frontend developer
+        - platform engineer
+        - software engineer
+        - python developer
     arbeitnow:
       enabled: true
     greenhouse:
@@ -121,13 +137,20 @@ scout:
         - volvo
         - polestar
         - iizuke
+        - epidemicsound
+        - truecaller
+        - trustly
+        - mentimeter
+        - einride
     lever:
       enabled: true
       companies:
         - tretton37
+    remotive:
+      enabled: true
     adzuna:
       enabled: false
-      countries: [se, de, nl, gb, at, be, ch]
+      countries: [se, de, nl, dk, no, fi, at, be, ch]
   polite_delay_seconds: 1.0
 
 resume:
@@ -139,6 +162,6 @@ resume:
   max_pages: 2
 
 scheduler:
-  scout_cron: "0 */6 * * *"
+  scout_cron: "*/15 * * * *"
   repo_watch_cron: "*/15 * * * *"
   weekly_report_cron: "0 7 * * mon"

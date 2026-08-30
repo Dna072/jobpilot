@@ -30,6 +30,6 @@ def task_weekly_report() -> dict:
 
 @celery.on_after_configure.connect
 def setup_periodic(sender, **kwargs) -> None:
-    sender.add_periodic_task(6 * 3600, task_scout.s(), name="scout-every-6h")
+    sender.add_periodic_task(15 * 60, task_scout.s(), name="scout-every-15m")
     sender.add_periodic_task(15 * 60, task_watch_repos.s(), name="repo-watch-15m")
     sender.add_periodic_task(7 * 24 * 3600, task_weekly_report.s(), name="weekly-report")

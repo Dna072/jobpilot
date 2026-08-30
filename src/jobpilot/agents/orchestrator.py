@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import secrets
 import time
 from datetime import UTC, datetime
 
@@ -8,7 +9,7 @@ from jobpilot.agents.cv import generate_package
 from jobpilot.agents.planner import plan_from_gap
 from jobpilot.analyst import analyze_job
 from jobpilot.apply.submit import attempt_application
-from jobpilot.config import load_app_config
+from jobpilot.config import load_app_config, public_base_url
 from jobpilot.db.models import (
     AgentRun,
     Application,
@@ -41,6 +42,7 @@ from jobpilot.schemas.common import (
     require_submission_evidence,
 )
 from jobpilot.schemas.job import JobPosting
+from jobpilot.geo import in_geographic_scope, location_rank
 from jobpilot.sources.jobs import discover_jobs
 
 
@@ -106,7 +108,7 @@ def seed_knowledge() -> None:
                     skills=project.skills_demonstrated,
                 )
             )
-        for name in ("arbeitnow", "greenhouse", "lever", "manual"):
+        for name in ("arbeitnow", "greenhouse", "lever", "jobtech", "remotive", "adzuna", "manual"):
             if not session.query(JobSource).filter_by(name=name).first():
                 session.add(JobSource(name=name, kind="api"))
         session.commit()
@@ -176,6 +178,8 @@ def upsert_job(posting: JobPosting) -> tuple[Job, bool]:
 def ingest_postings(postings: list[JobPosting]) -> int:
     created = 0
     for posting in postings:
+        if not in_geographic_scope(posting.location, posting.country, posting.city, posting.work_mode):
+            continue
         _, is_new = upsert_job(posting)
         created += int(is_new)
     return created
@@ -238,9 +242,15 @@ def process_job(job_id: str) -> dict:
         gap = analyze_gaps(analysis)
         if gap.verdict.value == "NEW_PROJECT":
             spec = plan_from_gap(gap)
-            app.status = ApplicationStatus.PROJECT_REQUIRED.value
-            if spec:
-                existing = session.query(ProjectRepository).filter_by(requested_name=spec.repository_name).first()
+            existing = (
+                session.query(ProjectRepository).filter_by(requested_name=spec.repository_name).first()
+                if spec
+                else None
+            )
+            project_ready = bool(existing and existing.status == ProjectStatus.PROJECT_COMPLETE.value)
+            if spec and not project_ready:
+                if ApplicationStatus(app.status) == ApplicationStatus.MATCHED:
+                    app.status = ApplicationStatus.PROJECT_REQUIRED.value
                 if not existing:
                     session.add(
                         ProjectRepository(
@@ -261,17 +271,33 @@ def process_job(job_id: str) -> dict:
                     session.add(
                         Notification(
                             kind="create_repository",
-                            subject=f"ACTION REQUIRED — Create Repository: {spec.title}",
+                            subject=f"Please create a GitHub repository for {spec.title}",
                             body=body,
                             sent=bool(result.get("sent")),
                         )
                     )
-                app.status = ApplicationStatus.WAITING_FOR_REPOSITORY.value
-            session.commit()
-            return {"status": app.status, "gap": gap.verdict.value}
+                if ApplicationStatus(app.status) in {
+                    ApplicationStatus.PROJECT_REQUIRED,
+                    ApplicationStatus.MATCHED,
+                }:
+                    app.status = ApplicationStatus.WAITING_FOR_REPOSITORY.value
+                session.commit()
+                return {"status": app.status, "gap": gap.verdict.value}
+            if project_ready and ApplicationStatus(app.status) == ApplicationStatus.WAITING_FOR_REPOSITORY:
+                app.status = ApplicationStatus.PROJECT_COMPLETE.value
 
         package = generate_package(analysis, match)
+        token = secrets.token_urlsafe(24)
+        package.approval_token = token
+        base = public_base_url()
+        if base:
+            package.preview_url = f"{base}/apply/{token}"
+        app.approval_token = token
         app.selected_resume_type = package.selected_resume.value
+        if ApplicationStatus(app.status) == ApplicationStatus.PROJECT_COMPLETE:
+            assert_transition(ApplicationStatus.PROJECT_COMPLETE, ApplicationStatus.CV_GENERATED)
+        elif ApplicationStatus(app.status) == ApplicationStatus.WAITING_FOR_REPOSITORY:
+            assert_transition(ApplicationStatus.WAITING_FOR_REPOSITORY, ApplicationStatus.CV_GENERATED)
         app.status = ApplicationStatus.CV_GENERATED.value
         app.status = ApplicationStatus.READY_TO_APPLY.value
         session.add(
@@ -324,8 +350,8 @@ def process_job(job_id: str) -> dict:
                 session.add(
                     Notification(
                         kind="human_action",
-                        subject=f"ACTION REQUIRED — {package.company} — {package.role}",
-                        body=attempt.human_action or "",
+                        subject=f"Please review the application to {package.role} at {package.company}",
+                        body=result.get("body") or attempt.human_action or "",
                         sent=bool(result.get("sent")),
                     )
                 )
@@ -361,13 +387,17 @@ def run_cycle(limit: int = 25, scout: bool = True) -> dict:
     session = get_session()
     processed = []
     try:
-        pending = (
-            session.query(Application)
+        rows = (
+            session.query(Application, Job)
+            .join(Job, Application.job_id == Job.id)
             .filter(Application.status.in_([ApplicationStatus.DISCOVERED.value, ApplicationStatus.ANALYZED.value]))
-            .limit(limit)
             .all()
         )
-        ids = [a.job_id for a in pending]
+        rows.sort(
+            key=lambda pair: location_rank(pair[1].location, pair[1].country, pair[1].city, pair[1].work_mode),
+            reverse=True,
+        )
+        ids = [app.job_id for app, _job in rows[:limit]]
     finally:
         session.close()
     for job_id in ids:

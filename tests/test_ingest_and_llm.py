@@ -6,6 +6,34 @@ from jobpilot.schemas.job import JobPosting
 from jobpilot.sources.jobs import parse_generic_job
 
 
+def test_ingestion_skips_us_only_roles():
+    seed_knowledge()
+    us = parse_generic_job(
+        {
+            "id": "us-1",
+            "source": "manual",
+            "company": "Example US",
+            "title": "Data Engineer",
+            "location": "New York, USA",
+            "country": "United States",
+            "job_url": "https://example.com/us",
+            "description": "Onsite New York. Required: Python.",
+        }
+    )
+    se = parse_generic_job(
+        {
+            "id": "se-1",
+            "source": "manual",
+            "company": "Example AB",
+            "title": "Data Engineer",
+            "location": "Uppsala, Sweden",
+            "job_url": "https://example.com/se",
+            "description": "Hybrid Uppsala. Required: Python SQL.",
+        }
+    )
+    assert ingest_postings([us, se]) == 1
+
+
 def test_ingestion_dedup():
     seed_knowledge()
     posting = parse_generic_job(

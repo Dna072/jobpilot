@@ -14,6 +14,21 @@ type Payload = {
   requests: Array<{ name: string; status: string; github_url: string | null }>;
 };
 
+function describeProjectStatus(status: string): string {
+  switch (status) {
+    case "WAITING_FOR_REPOSITORY":
+      return "Waiting for you to create the GitHub repository";
+    case "REPOSITORY_FOUND":
+      return "Repository found — starter code not pushed yet";
+    case "PROJECT_BUILDING":
+      return "Writing starter code";
+    case "PROJECT_COMPLETE":
+      return "Starter code is on GitHub";
+    default:
+      return status;
+  }
+}
+
 export default async function ProjectsPage() {
   let data: Payload = { inventory: [], requests: [] };
   try {
@@ -43,7 +58,7 @@ export default async function ProjectsPage() {
               {data.requests.map((r) => (
                 <tr key={r.name}>
                   <td>{r.name}</td>
-                  <td>{r.status}</td>
+                  <td>{describeProjectStatus(r.status)}</td>
                   <td>{r.github_url ?? "waiting"}</td>
                 </tr>
               ))}

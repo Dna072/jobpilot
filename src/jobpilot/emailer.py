@@ -4,6 +4,7 @@ import smtplib
 from email.message import EmailMessage
 
 from jobpilot.config import get_settings
+from jobpilot.resume.tailor import display_company_name
 from jobpilot.schemas.application import ApplicationPackage, WeeklyReport
 
 
@@ -24,132 +25,175 @@ def _send(subject: str, body: str, attachments: list[tuple[str, bytes, str]] | N
         if settings.smtp_username:
             smtp.login(settings.smtp_username, settings.smtp_password)
         smtp.send_message(msg)
-    return {"sent": True, "subject": subject}
+    return {"sent": True, "subject": subject, "body": body}
 
 
 def email_create_repository(project: str, body: str) -> dict:
-    return _send(f"ACTION REQUIRED — Create Repository: {project}", body)
+    return _send(f"Please create a GitHub repository for {project}", body)
 
 
 def email_project_complete(project: str, body: str) -> dict:
-    return _send(f"PROJECT COMPLETE — {project}", body)
+    return _send(f"The {project} repository is ready to use", body)
 
 
 def email_human_action(package: ApplicationPackage) -> dict:
-    subject = f"ACTION REQUIRED — {package.company} — {package.role}"
-    body = render_application_email(package, remaining=package.remaining_human_action or "")
-    return _send(subject, body)
+    company = display_company_name(package.company)
+    subject = f"Please review the application to {package.role} at {company}"
+    body = render_application_email(package)
+    return _send(subject, body, attachments=_resume_attachments(package))
 
 
 def email_submitted(package: ApplicationPackage, confirmation: str) -> dict:
-    subject = f"APPLICATION SUBMITTED — {package.company} — {package.role}"
-    body = render_application_email(package, remaining=f"Confirmation: {confirmation}")
-    return _send(subject, body)
+    company = display_company_name(package.company)
+    subject = f"Application sent: {package.role} at {company}"
+    extra = f"The company should have a record of this application. Reference: {confirmation}." if confirmation else ""
+    body = render_application_email(package, extra=extra)
+    return _send(subject, body, attachments=_resume_attachments(package))
+
+
+def email_github_token_needed(repo: str, github_url: str) -> dict:
+    url = github_url or f"https://github.com/Dna072/{repo}"
+    body = "\n".join(
+        [
+            "Hi Derrick,",
+            "",
+            f"The {repo} repository exists ({url}), but the starter code cannot be added yet.",
+            "A GitHub personal access token with access to your repositories is missing or still set to a placeholder.",
+            "",
+            "Please:",
+            "1. Open https://github.com/settings/tokens",
+            '2. Create a token with the "repo" scope',
+            "3. Store it as the jobpilot-github-token secret in Google Cloud, or as GITHUB_TOKEN in .env",
+            "4. Run the repository watch again (or wait for the next 15-minute check)",
+            "",
+            "After that, the starter files will be committed to the empty repository.",
+        ]
+    )
+    return _send(f"A GitHub token is needed to add code to {repo}", body)
 
 
 def email_failed(package: ApplicationPackage, reason: str) -> dict:
-    subject = f"APPLICATION FAILED — {package.company} — {package.role}"
-    return _send(subject, render_application_email(package, remaining=f"Failure: {reason}"))
+    company = display_company_name(package.company)
+    subject = f"Could not finish applying to {package.role} at {company}"
+    body = render_application_email(
+        package,
+        extra="The form could not be completed automatically. Please submit it yourself using the link and cover letter below.",
+    )
+    return _send(subject, body, attachments=_resume_attachments(package))
 
 
 def email_weekly(report: WeeklyReport) -> dict:
-    return _send("WEEKLY JOB APPLICATION REPORT", render_weekly(report))
+    return _send("Your weekly job search update", render_weekly(report))
 
 
-def render_application_email(package: ApplicationPackage, remaining: str = "") -> str:
-    return "\n".join(
+def render_application_email(package: ApplicationPackage, extra: str = "") -> str:
+    company = display_company_name(package.company)
+    place = ", ".join(p for p in (package.location, package.country) if p)
+    lines = [
+        "Hi Derrick,",
+        "",
+        f"There is a role at {company} that looks like a good fit. Nothing has been sent to the company yet. Please review the CV, cover letter, and answers first.",
+        "",
+        f"Role: {package.role}",
+        f"Company: {company}",
+    ]
+    if place:
+        lines.append(f"Location: {place}")
+    lines.append(f"Company application page: {package.job_url}")
+    if package.preview_url:
+        lines.extend(
+            [
+                "",
+                "Review the CV, cover letter, and answers here:",
+                package.preview_url,
+                "",
+                "On that page you can send the application automatically, or keep the draft and submit it yourself on the company site.",
+            ]
+        )
+    if extra:
+        lines.extend(["", extra])
+    lines.extend(
         [
-            f"Company: {package.company}",
-            f"Role: {package.role}",
-            f"Country: {package.country or ''}",
-            f"Location: {package.location}",
-            f"Match score: {package.match_score}",
-            f"Selected resume: {package.selected_resume.value}",
-            f"Application URL: {package.job_url}",
-            f"Resume PDF: {package.resume_pdf_path or 'pending'}",
-            f"Projects used: {', '.join(package.portfolio_links) or 'see package'}",
             "",
-            remaining,
+            "Cover letter that would be sent:",
             "",
-            "Cover letter:",
-            package.cover_letter or "(not required / not generated)",
-            "",
-            "Screening answers:",
-            *[f"Q: {a.question}\nA: {a.answer}" for a in package.screening_answers],
+            package.cover_letter or "(cover letter not generated)",
         ]
     )
+    if package.resume_pdf_path:
+        lines.extend(
+            [
+                "",
+                "The tailored CV is attached to this email as resume.pdf.",
+            ]
+        )
+    if package.portfolio_links or package.github_links:
+        lines.extend(["", "Links that would be included:"])
+        for link in [*package.portfolio_links, *package.github_links]:
+            lines.append(f"- {link}")
+    if package.screening_answers:
+        lines.extend(["", "Answers that would be used if the form asks:"])
+        for answer in package.screening_answers:
+            lines.append(f"- {answer.question} {answer.answer}")
+    return "\n".join(lines)
+
+
+def _resume_attachments(package: ApplicationPackage) -> list[tuple[str, bytes, str]]:
+    from jobpilot.storage import read_bytes
+
+    data = read_bytes(package.resume_pdf_path)
+    if not data:
+        return []
+    return [("resume.pdf", data, "application/pdf")]
 
 
 def render_weekly(report: WeeklyReport) -> str:
-    skills = "\n".join(f"{k:20} {v:.0%}" for k, v in report.most_requested_skills.items()) or "(none yet)"
+    skills = ", ".join(k for k, _ in list(report.most_requested_skills.items())[:8]) or "none recorded yet"
+    countries = ", ".join(f"{k} ({v})" for k, v in report.applications_by_country.items()) or "none yet"
+    companies = ", ".join(report.companies_applied) or "none yet"
     return "\n".join(
         [
-            "WEEKLY JOB APPLICATION REPORT",
+            "Hi Derrick,",
             "",
-            f"Jobs discovered:              {report.jobs_discovered}",
-            f"Jobs analyzed:                {report.jobs_analyzed}",
-            f"Jobs rejected:                {report.jobs_rejected}",
-            f"Strong matches:               {report.strong_matches}",
-            f"Applications submitted:       {report.applications_submitted}",
-            f"Human actions required:       {report.human_actions_required}",
-            f"Failed applications:          {report.failed_applications}",
-            f"Projects created:             {report.projects_created}",
-            f"Projects upgraded:            {report.projects_upgraded}",
-            f"Resumes generated:            {report.resumes_generated}",
-            f"Average match score:          {report.average_match_score}",
-            f"Highest match score:          {report.highest_match_score}",
+            "Here is a simple summary of this week's job search.",
             "",
-            "Applications by country:",
-            *([f"  {k}: {v}" for k, v in report.applications_by_country.items()] or ["  (none)"]),
+            f"New roles found: {report.jobs_discovered}",
+            f"Applications sent: {report.applications_submitted}",
+            f"Applications still waiting for you to submit: {report.human_actions_required}",
+            f"Applications that could not be finished: {report.failed_applications}",
             "",
-            "Applications by role:",
-            *([f"  {k}: {v}" for k, v in report.applications_by_role.items()] or ["  (none)"]),
+            f"Where the roles were: {countries}",
+            f"Companies applied to: {companies}",
+            f"Skills that came up often: {skills}",
             "",
-            "Companies applied to:",
-            ", ".join(report.companies_applied) or "(none)",
+            "I will keep looking first in Uppsala, Stockholm, Gothenburg and Malmö, then the rest of Sweden, then other European countries.",
             "",
-            "Most Requested Skills",
-            skills,
-            "",
-            "Portfolio Gaps",
-            *([f"- {g}" for g in report.portfolio_gaps] or ["- (none recorded)"]),
-            "",
-            "Recommended Projects",
-            *([f"- {p}" for p in report.recommended_projects] or ["- (none)"]),
-            "",
-            "Application Quality",
-            report.quality_notes,
-            "",
-            "Strategy Recommendations",
-            report.strategy,
+            "If a role is sitting in your inbox, open the review link, check the CV and cover letter, then either send it or submit it yourself on the company's site.",
         ]
     )
 
 
 def render_repo_request(spec_title: str, repo: str, purpose: str, jobs: list[str], skills: list[str], architecture: str) -> str:
+    skill_list = ", ".join(skills) if skills else "the skills this kind of role usually asks for"
+    job_list = ", ".join(jobs) if jobs else "related openings"
     return "\n".join(
         [
-            "ACTION REQUIRED — CREATE REPOSITORY",
+            "Hi Derrick,",
             "",
-            f"Project name: {spec_title}",
+            f"Please create a public GitHub repository so we can build {spec_title}.",
+            f"That project would help with roles such as {job_list}, especially around {skill_list}.",
+            "",
             f"Repository name: {repo}",
-            f"Purpose: {purpose}",
-            f"Target jobs: {', '.join(jobs)}",
-            f"Missing skills: {', '.join(skills)}",
-            f"Architecture:\n{architecture}",
+            f"What it is for: {purpose}",
             "",
-            "Visibility recommendation: public",
-            "",
-            "Exact GitHub instructions:",
+            "How to create it:",
             "1. Open https://github.com/new",
             "2. Owner: Dna072",
             f"3. Repository name: {repo}",
-            "4. Public",
-            "5. Do not initialize with README if JobPilot will scaffold the repo",
-            "6. Create repository",
-            "7. Clone it into a workspace path listed in config.project_strategy.project_roots",
+            "4. Make it public",
+            "5. Create the repository",
             "",
-            "JobPilot will detect the repository and continue automatically.",
-            "PROJECT_STATUS = WAITING_FOR_REPOSITORY",
+            "Leave the repository empty. You do not need to clone it or add files yourself.",
+            "Once the empty repository exists on GitHub, the starter code will be added automatically.",
         ]
     )

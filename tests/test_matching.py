@@ -1,5 +1,5 @@
 from jobpilot.analyst import analyze_job
-from jobpilot.matching import match_job, select_resume
+from jobpilot.matching import match_job, score_location, select_resume
 from jobpilot.schemas.common import MatchRecommendation, ResumeType, WorkMode
 from jobpilot.schemas.job import JobPosting
 from jobpilot.sources.jobs import parse_generic_job
@@ -46,6 +46,15 @@ def test_match_data_engineer_is_strong():
         MatchRecommendation.APPLY_AFTER_PROJECT,
         MatchRecommendation.HUMAN_REVIEW,
     }
+
+
+def test_sweden_priority_cities_beat_other_eu():
+    uppsala = analyze_job(DE_JOB.model_copy(update={"location": "Uppsala, Sweden", "city": "Uppsala"}))
+    berlin = analyze_job(
+        DE_JOB.model_copy(update={"location": "Berlin, Germany", "country": "Germany", "city": "Berlin"})
+    )
+    assert score_location(uppsala) > score_location(berlin)
+    assert score_location(uppsala) == 1.0
 
 
 def test_low_match_remote_us():

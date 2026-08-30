@@ -10,5 +10,7 @@ resource "google_secret_manager_secret_version" "smtp_placeholders" {
   secret                 = each.value
   secret_data            = "unset"
   deletion_policy        = "ABANDON"
-  lifecycle { ignore_changes = [secret_data] }
+  lifecycle {
+    ignore_changes = [secret_data]
+  }
 }

@@ -3,8 +3,15 @@ FROM python:3.12-slim
 WORKDIR /app
 ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 PYTHONPATH=/app/src
 
+# Tectonic compiles the Leslie Cheng / Fira Sans masters so tailored PDFs
+# match cv/source/*.pdf. The binary is ~20MB vs a full TeX Live image.
+ARG TECTONIC_VERSION=0.15.0
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl ca-certificates && rm -rf /var/lib/apt/lists/*
+    curl ca-certificates libfontconfig1 git \
+    && curl -fsSL "https://github.com/tectonic-typesetting/tectonic/releases/download/tectonic%40${TECTONIC_VERSION}/tectonic-${TECTONIC_VERSION}-x86_64-unknown-linux-gnu.tar.gz" \
+      | tar -xz -C /usr/local/bin \
+    && chmod +x /usr/local/bin/tectonic \
+    && rm -rf /var/lib/apt/lists/*
 
 COPY pyproject.toml README.md /app/
 COPY src /app/src

@@ -106,12 +106,12 @@ def build_weekly_report() -> WeeklyReport:
             portfolio_gaps=["Kafka / real-time streaming", "dbt analytics layer"],
             recommended_projects=["Real-Time Event Processing and Analytics Platform"],
             quality_notes=(
-                "Volume is capped. SUBMITTED is only recorded with confirmation evidence. "
-                "Portfolio projects are never rewritten as employment."
+                "Applications are only marked sent when there is a confirmation. "
+                "Portfolio work is not described as employment."
             ),
             strategy=(
-                "Keep Sweden-first weighting. Prefer upgrading Sparkify with dbt over a new warehouse. "
-                "Do not auto-apply below the configured minimum match score."
+                "Keep looking first in Uppsala, Stockholm, Gothenburg and Malmö, then other Sweden, "
+                "then the rest of Europe."
             ),
         )
         session.add(WeeklyReportRow(payload=report.model_dump()))

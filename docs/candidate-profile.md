@@ -16,7 +16,7 @@
 | GitHub | https://github.com/Dna072 | GitHub, resume |
 | Portfolio | https://dna072.github.io | GitHub Pages |
 | LinkedIn | https://www.linkedin.com/in/derrick-adjei-5421289a/ | portfolio `site.ts` |
-| Headline on current PDF | Data Engineer | `cv/source/Derrick_Adjei_Resume.pdf` |
+| Headline on current PDFs | Data Engineer / Backend Engineer | `cv/source/Derrick_Adjei_Data_Engineer.pdf`, `cv/source/Derrick_Adjei_Backend_Engineer.pdf` |
 
 ## Target roles (configurable; defaults from candidate brief)
 
@@ -26,7 +26,7 @@
 
 **Tier 3:** Frontend Engineer, Full Stack Engineer, Software Engineer.
 
-Geographic priority: Sweden first, then Denmark, Norway, Finland, Germany, Netherlands, Switzerland, Ireland, Belgium, then other Europe. Remote/hybrid Europe and relocation are in scope.
+Geographic priority: Sweden first, with Uppsala, Stockholm, Gothenburg, and Malmö at the top. Then other Sweden, then Denmark, Norway, Finland, Germany, Netherlands, Switzerland, Ireland, Belgium, then other Europe. Remote/hybrid Europe and relocation are in scope. US-only roles are out of scope.
 
 ## Professional experience (do not convert portfolio into employment)
 
@@ -153,7 +153,7 @@ At discovery time `Dna072/jobpilot` contained only `README.md` (`# jobpilot / Jo
 2. Local clones of portfolio repositories
 3. Existing JobPilot configuration, database, or agents
 
-Only **one** PDF resume was found (data-engineer oriented). The three-resume LaTeX system is created in implementation from this profile, without inventing employers, metrics, or technologies.
+Official backend and data PDFs plus matching Leslie Cheng `.tex` sources were added on 2026-08-23. The frontend master uses that same template; no official frontend PDF was provided.
 
 ## Profile rules for every agent
 

@@ -42,10 +42,10 @@ When CAPTCHA, identity verification, prohibited automation, missing credentials,
 4. Email:
 
 ```text
-Subject: ACTION REQUIRED — [COMPANY] — [ROLE]
+Subject: Please apply to [ROLE] at [COMPANY]
 ```
 
-Body includes company, role, URL, match score, selected resume, attachment/paths, remaining human step.
+The email to Derrick is plain English: company, role, location, apply link, and what to do. It includes the **company-facing cover letter**, which must never mention JobPilot, match scores, resume type, or any other internal process.
 
 The orchestrator does **not** poll LinkedIn. The operator marks completion in the dashboard (`POST /api/v1/applications/{id}/human-complete`) or the system records a confirmation email if IMAP is configured (optional, off by default).
 
@@ -66,12 +66,12 @@ JobPilot never calls `github.com/repos` POST to create repositories.
 
 | Event | Subject |
 |---|---|
-| New repo needed | `ACTION REQUIRED — Create Repository: [PROJECT]` |
-| Project completed | `PROJECT COMPLETE — [PROJECT]` |
-| Human action | `ACTION REQUIRED — [COMPANY] — [ROLE]` |
-| Submitted | `APPLICATION SUBMITTED — [COMPANY] — [ROLE]` |
-| Failed | `APPLICATION FAILED — [COMPANY] — [ROLE]` |
-| Weekly | `WEEKLY JOB APPLICATION REPORT` |
+| New repo needed | `Please create a GitHub repository for [PROJECT]` |
+| Project completed | `The [PROJECT] repository is ready to use` |
+| Human action | `Please apply to [ROLE] at [COMPANY]` |
+| Submitted | `Application sent: [ROLE] at [COMPANY]` |
+| Failed | `Could not finish applying to [ROLE] at [COMPANY]` |
+| Weekly | `Your weekly job search update` |
 
 SMTP settings from env: `EMAIL_PROVIDER`, `SMTP_HOST`, `SMTP_PORT`, `SMTP_USERNAME`, `SMTP_PASSWORD`, `EMAIL_FROM`, `EMAIL_TO`.
 

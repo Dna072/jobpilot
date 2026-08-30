@@ -41,7 +41,7 @@ variable "web_image" {
 variable "db_tier" {
   type        = string
   default     = "db-f1-micro"
-  description = "Cloud SQL tier. db-f1-micro is the cheapest shared instance."
+  description = "Cloud SQL tier. db-f1-micro is the cheapest shared-core instance and requires edition ENTERPRISE (not ENTERPRISE_PLUS)."
 }
 
 variable "deletion_protection" {
@@ -59,6 +59,12 @@ variable "scheduler_region" {
   type        = string
   description = "Cloud Scheduler is not in every region. europe-west1 (Belgium) is the usual EU home."
   default     = "europe-west1"
+}
+
+variable "paused" {
+  type        = bool
+  default     = false
+  description = "If true, Cloud Scheduler jobs stay paused and Cloud Run accepts no traffic. Use scripts/gcp-stop.sh."
 }
 
 locals {
