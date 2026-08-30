@@ -98,6 +98,15 @@ export GCP_PROJECT=your-project-id
 
 That provisions Cloud Run (API + dashboard), Cloud SQL, Cloud Scheduler jobs, Secret Manager, and a GCS bucket for generated CVs. Redis/Celery are not used in GCP — Scheduler runs `jobpilot cycle` and `jobpilot-watch` every 15 minutes.
 
+To pause everything without deleting data:
+
+```bash
+export GCP_PROJECT=skandix-app
+./scripts/gcp-stop.sh
+```
+
+Resume with `./scripts/gcp-resume.sh`.
+
 ## Configuration
 
 All targeting, weights, and caps live in [`config/jobpilot.yaml`](config/jobpilot.yaml). Do not hard-code them.

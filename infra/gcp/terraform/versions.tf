@@ -61,6 +61,12 @@ variable "scheduler_region" {
   default     = "europe-west1"
 }
 
+variable "paused" {
+  type        = bool
+  default     = false
+  description = "If true, Cloud Scheduler jobs stay paused and Cloud Run accepts no traffic. Use scripts/gcp-stop.sh."
+}
+
 locals {
   connection_name = google_sql_database_instance.jobpilot.connection_name
   database_url = format(

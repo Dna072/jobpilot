@@ -39,7 +39,7 @@ resource "google_cloud_run_v2_service" "api" {
     timeout                          = "300s"
     scaling {
       min_instance_count = 0
-      max_instance_count = 2
+      max_instance_count = var.paused ? 0 : 2
     }
     volumes {
       name = "cloudsql"
@@ -95,7 +95,7 @@ resource "google_cloud_run_v2_service" "web" {
     service_account = google_service_account.run.email
     scaling {
       min_instance_count = 0
-      max_instance_count = 2
+      max_instance_count = var.paused ? 0 : 2
     }
     containers {
       image = var.web_image

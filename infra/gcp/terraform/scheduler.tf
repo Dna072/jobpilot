@@ -4,6 +4,7 @@ resource "google_cloud_scheduler_job" "cycle" {
   schedule    = "*/15 * * * *"
   time_zone   = "Europe/Stockholm"
   region      = var.scheduler_region
+  paused      = var.paused
   depends_on  = [google_project_service.services, google_cloud_run_v2_job.cycle]
 
   http_target {
@@ -21,6 +22,7 @@ resource "google_cloud_scheduler_job" "watch" {
   schedule    = "*/15 * * * *"
   time_zone   = "Europe/Stockholm"
   region      = var.scheduler_region
+  paused      = var.paused
   depends_on  = [google_project_service.services, google_cloud_run_v2_job.watch]
 
   http_target {
@@ -38,6 +40,7 @@ resource "google_cloud_scheduler_job" "report" {
   schedule    = "0 7 * * 1"
   time_zone   = "Europe/Stockholm"
   region      = var.scheduler_region
+  paused      = var.paused
   depends_on  = [google_project_service.services, google_cloud_run_v2_job.report]
 
   http_target {

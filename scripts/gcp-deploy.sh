@@ -91,6 +91,7 @@ region     = "${REGION}"
 api_image  = "${REPO}/api:${TAG}"
 web_image  = "${REPO}/web:${TAG}"
 db_tier    = "${DB_TIER:-db-f1-micro}"
+paused     = false
 EOF
 
 terraform -chdir="$TF_DIR" init

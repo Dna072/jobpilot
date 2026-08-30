@@ -134,6 +134,26 @@ terraform -chdir=infra/gcp/terraform apply
 - LinkedIn or CAPTCHA
 - Marking applications `SUBMITTED` without confirmation evidence
 
+## Pause without deleting data
+
+To stop scout, repo-watch, emails, and the public site **for now** (Cloud SQL data stays):
+
+```bash
+export GCP_PROJECT=skandix-app
+./scripts/gcp-stop.sh
+```
+
+That pauses the three Scheduler jobs, sets Cloud Run max instances to 0, and stops the Cloud SQL instance (`activation-policy=NEVER`). Add `--keep-sql` if you only want to pause jobs.
+
+Start it again later:
+
+```bash
+export GCP_PROJECT=skandix-app
+./scripts/gcp-resume.sh
+```
+
+Do **not** run `./scripts/gcp-deploy.sh` while you want it paused — deploy writes `paused = false` and would start the jobs again.
+
 ## Tear-down
 
 ```bash
